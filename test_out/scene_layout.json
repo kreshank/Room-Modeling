@@ -1,0 +1,59 @@
+{
+  "scene_id": "scene0000_00",
+  "units": "meters",
+  "room_polygon": [
+    [
+      1.8999999985098839,
+      0.49999999850988397
+    ],
+    [
+      1.9499999985098841,
+      0.3499999985098839
+    ],
+    [
+      1.799999998509884,
+      0.3499999985098839
+    ],
+    [
+      1.799999998509884,
+      0.49999999850988397
+    ]
+  ],
+  "room_bbox": {
+    "min_x": 1.799999998509884,
+    "min_y": 0.3499999985098839,
+    "max_x": 1.9499999985098841,
+    "max_y": 0.49999999850988397,
+    "width": 0.15000000000000013,
+    "height": 0.15000000000000008
+  },
+  "objects": [],
+  "metadata": {
+    "source": "ScanNet annotated scene",
+    "mesh_file": "scene0000_00_vh_clean_2.ply",
+    "aggregation_file": "scene0000_00.aggregation.json",
+    "segmentation_file": "scene0000_00_vh_clean_2.0.010000.segs.json",
+    "meta_file": "scene0000_00.txt",
+    "labels_file": "scene0000_00_vh_clean_2.labels.ply",
+    "floor_label_ids_used": [
+      2
+    ],
+    "axis_alignment_applied": true,
+    "room_resolution_m": 0.05,
+    "object_count": 0,
+    "excluded_labels": [
+      "ceiling",
+      "curtain",
+      "door",
+      "floor",
+      "mirror",
+      "otherfurniture",
+      "otherprop",
+      "otherstructure",
+      "shower curtain",
+      "wall",
+      "window"
+    ],
+    "min_points_per_object": 50
+  }
+}

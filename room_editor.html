@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ScanNet Top-Down Room Editor</title>
+  <style>
+    :root {
+      --bg: #111;
+      --panel: #1d1d1d;
+      --text: #f2f2f2;
+      --muted: #bdbdbd;
+      --accent: #72c4ff;
+      --border: #343434;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      height: 100vh;
+    }
+    .panel {
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      padding: 16px;
+      overflow: auto;
+    }
+    h1 {
+      font-size: 20px;
+      margin: 0 0 10px 0;
+    }
+    h2 {
+      font-size: 15px;
+      margin: 18px 0 8px 0;
+    }
+    p, li, label, button, input, textarea {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .muted { color: var(--muted); }
+    .controls {
+      display: grid;
+      gap: 8px;
+    }
+    button, input[type="number"] {
+      background: #2a2a2a;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    button:hover {
+      cursor: pointer;
+      border-color: var(--accent);
+    }
+    .object-list {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .object-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #171717;
+    }
+    .object-item.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent) inset;
+    }
+    .tag {
+      display: inline-block;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 1px 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .canvas-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #fafafa;
+      cursor: grab;
+    }
+    canvas.dragging { cursor: grabbing; }
+    .hint {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      background: rgba(0,0,0,.7);
+      color: white;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      max-width: 420px;
+    }
+    code {
+      background: rgba(255,255,255,.06);
+      padding: 1px 5px;
+      border-radius: 6px;
+    }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .grow { flex: 1; }
+  </style>
+</head>
+<body>
+  <aside class="panel">
+    <h1>Top-Down Room Editor</h1>
+    <p class="muted">Load the exported <code>scene_layout.json</code>, drag furniture, rotate it, then export the edited scene.</p>
+
+    <div class="controls">
+      <input id="fileInput" type="file" accept=".json" />
+      <div class="row">
+        <button id="exportBtn">Export edited JSON</button>
+        <button id="resetBtn">Reset scene</button>
+      </div>
+      <div class="row">
+        <button id="rotateLeftBtn">Rotate -5°</button>
+        <button id="rotateRightBtn">Rotate +5°</button>
+      </div>
+      <div class="row">
+        <label><input id="showLabels" type="checkbox" checked /> Show labels</label>
+        <label><input id="snapMode" type="checkbox" /> Snap to 5 cm</label>
+      </div>
+    </div>
+
+    <h2>Selected object</h2>
+    <div id="selectedInfo" class="muted">None</div>
+
+    <h2>Objects</h2>
+    <div id="objectList" class="object-list"></div>
+  </aside>
+
+  <main class="canvas-wrap">
+    <canvas id="canvas"></canvas>
+    <div class="hint">
+      Drag objects with the mouse. Click to select. Use <code>Q</code>/<code>E</code> or the rotate buttons to rotate the selected object.
+      Mouse wheel zooms. Hold space and drag to pan.
+    </div>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const fileInput = document.getElementById('fileInput');
+    const exportBtn = document.getElementById('exportBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+    const rotateRightBtn = document.getElementById('rotateRightBtn');
+    const showLabelsCheckbox = document.getElementById('showLabels');
+    const snapModeCheckbox = document.getElementById('snapMode');
+    const objectList = document.getElementById('objectList');
+    const selectedInfo = document.getElementById('selectedInfo');
+
+    let scene = null;
+    let originalScene = null;
+    let selectedId = null;
+    let draggingObject = false;
+    let panning = false;
+    let dragOffset = { x: 0, y: 0 };
+    let lastMouse = { x: 0, y: 0 };
+    let viewport = {
+      scale: 70,
+      offsetX: 0,
+      offsetY: 0,
+    };
+    let spaceHeld = false;
+
+    function deepCopy(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    }
+
+    function worldToScreen(x, y) {
+      return {
+        x: x * viewport.scale + viewport.offsetX,
+        y: canvas.clientHeight - (y * viewport.scale + viewport.offsetY),
+      };
+    }
+
+    function screenToWorld(x, y) {
+      return {
+        x: (x - viewport.offsetX) / viewport.scale,
+        y: ((canvas.clientHeight - y) - viewport.offsetY) / viewport.scale,
+      };
+    }
+
+    function fitScene() {
+      if (!scene || !scene.room_bbox) return;
+      const bbox = scene.room_bbox;
+      const w = Math.max(bbox.width, 0.1);
+      const h = Math.max(bbox.height, 0.1);
+      const pad = 40;
+      const scaleX = (canvas.clientWidth - pad * 2) / w;
+      const scaleY = (canvas.clientHeight - pad * 2) / h;
+      viewport.scale = Math.min(scaleX, scaleY);
+      viewport.offsetX = pad - bbox.min_x * viewport.scale + ((canvas.clientWidth - pad * 2) - w * viewport.scale) / 2;
+      viewport.offsetY = pad - bbox.min_y * viewport.scale + ((canvas.clientHeight - pad * 2) - h * viewport.scale) / 2;
+      draw();
+    }
+
+    function objectCorners(obj) {
+      const hw = obj.width / 2;
+      const hd = obj.depth / 2;
+      const c = Math.cos(obj.theta);
+      const s = Math.sin(obj.theta);
+      const local = [
+        [-hw, -hd],
+        [ hw, -hd],
+        [ hw,  hd],
+        [-hw,  hd],
+      ];
+      return local.map(([x, y]) => ({
+        x: obj.cx + x * c - y * s,
+        y: obj.cy + x * s + y * c,
+      }));
+    }
+
+    function pointInPolygon(point, polygon) {
+      let inside = false;
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i].x, yi = polygon[i].y;
+        const xj = polygon[j].x, yj = polygon[j].y;
+        const intersect = ((yi > point.y) !== (yj > point.y)) &&
+          (point.x < (xj - xi) * (point.y - yi) / ((yj - yi) || 1e-9) + xi);
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    }
+
+    function drawGrid() {
+      const spacing = 0.5;
+      ctx.save();
+      ctx.strokeStyle = '#ececec';
+      ctx.lineWidth = 1;
+      const bbox = scene?.room_bbox;
+      if (!bbox) {
+        ctx.restore();
+        return;
+      }
+      const startX = Math.floor(bbox.min_x / spacing) * spacing - spacing;
+      const endX = Math.ceil(bbox.max_x / spacing) * spacing + spacing;
+      const startY = Math.floor(bbox.min_y / spacing) * spacing - spacing;
+      const endY = Math.ceil(bbox.max_y / spacing) * spacing + spacing;
+      for (let x = startX; x <= endX; x += spacing) {
+        const a = worldToScreen(x, startY);
+        const b = worldToScreen(x, endY);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+      for (let y = startY; y <= endY; y += spacing) {
+        const a = worldToScreen(startX, y);
+        const b = worldToScreen(endX, y);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+      if (!scene) return;
+
+      drawGrid();
+
+      // Room polygon
+      const room = scene.room_polygon || [];
+      if (room.length >= 3) {
+        ctx.save();
+        ctx.beginPath();
+        room.forEach(([x, y], i) => {
+          const p = worldToScreen(x, y);
+          if (i === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        });
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(0,0,0,0.04)';
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = 2;
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      for (const obj of scene.objects || []) {
+        const corners = objectCorners(obj).map(p => worldToScreen(p.x, p.y));
+        const selected = obj.id === selectedId;
+
+        ctx.save();
+        ctx.beginPath();
+        corners.forEach((p, i) => {
+          if (i === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        });
+        ctx.closePath();
+        ctx.fillStyle = selected ? 'rgba(114,196,255,0.20)' : 'rgba(80,80,80,0.10)';
+        ctx.strokeStyle = selected ? '#0079d6' : '#333';
+        ctx.lineWidth = selected ? 2.4 : 1.4;
+        ctx.fill();
+        ctx.stroke();
+
+        const center = worldToScreen(obj.cx, obj.cy);
+        const heading = worldToScreen(
+          obj.cx + (obj.width / 2) * Math.cos(obj.theta),
+          obj.cy + (obj.width / 2) * Math.sin(obj.theta)
+        );
+        ctx.beginPath();
+        ctx.moveTo(center.x, center.y);
+        ctx.lineTo(heading.x, heading.y);
+        ctx.strokeStyle = selected ? '#0079d6' : '#666';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        if (showLabelsCheckbox.checked) {
+          ctx.fillStyle = '#111';
+          ctx.font = '12px system-ui';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(obj.label, center.x, center.y);
+        }
+        ctx.restore();
+      }
+    }
+
+    function renderObjectList() {
+      objectList.innerHTML = '';
+      if (!scene?.objects) return;
+      for (const obj of scene.objects) {
+        const div = document.createElement('div');
+        div.className = 'object-item' + (obj.id === selectedId ? ' selected' : '');
+        div.innerHTML = `
+          <strong>${obj.label}</strong><br>
+          <span class="muted">id ${obj.id}</span>
+          <div class="tag">${obj.width.toFixed(2)} m × ${obj.depth.toFixed(2)} m</div>
+        `;
+        div.onclick = () => {
+          selectedId = obj.id;
+          updateSelectedInfo();
+          renderObjectList();
+          draw();
+        };
+        objectList.appendChild(div);
+      }
+    }
+
+    function updateSelectedInfo() {
+      const obj = scene?.objects?.find(o => o.id === selectedId);
+      if (!obj) {
+        selectedInfo.textContent = 'None';
+        return;
+      }
+      selectedInfo.innerHTML = `
+        <strong>${obj.label}</strong><br>
+        center: (${obj.cx.toFixed(2)}, ${obj.cy.toFixed(2)}) m<br>
+        size: ${obj.width.toFixed(2)} × ${obj.depth.toFixed(2)} m<br>
+        rotation: ${(obj.theta * 180 / Math.PI).toFixed(1)}°<br>
+        z-range: ${obj.z_min.toFixed(2)} to ${obj.z_max.toFixed(2)} m
+      `;
+    }
+
+    function pickObject(worldPoint) {
+      if (!scene?.objects) return null;
+      for (let i = scene.objects.length - 1; i >= 0; i--) {
+        const obj = scene.objects[i];
+        const poly = objectCorners(obj);
+        if (pointInPolygon(worldPoint, poly)) return obj;
+      }
+      return null;
+    }
+
+    function nudgeRotation(deltaDeg) {
+      const obj = scene?.objects?.find(o => o.id === selectedId);
+      if (!obj) return;
+      obj.theta += deltaDeg * Math.PI / 180;
+      updateSelectedInfo();
+      renderObjectList();
+      draw();
+    }
+
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      scene = JSON.parse(text);
+      originalScene = deepCopy(scene);
+      selectedId = scene.objects?.[0]?.id ?? null;
+      fitScene();
+      updateSelectedInfo();
+      renderObjectList();
+      draw();
+    });
+
+    exportBtn.addEventListener('click', () => {
+      if (!scene) return;
+      const blob = new Blob([JSON.stringify(scene, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${scene.scene_id || 'scene'}_edited_layout.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (!originalScene) return;
+      scene = deepCopy(originalScene);
+      updateSelectedInfo();
+      renderObjectList();
+      draw();
+    });
+
+    rotateLeftBtn.addEventListener('click', () => nudgeRotation(-5));
+    rotateRightBtn.addEventListener('click', () => nudgeRotation(5));
+    showLabelsCheckbox.addEventListener('change', draw);
+
+    canvas.addEventListener('mousedown', (e) => {
+      if (!scene) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const world = screenToWorld(x, y);
+      lastMouse = { x, y };
+
+      if (spaceHeld) {
+        panning = true;
+        canvas.classList.add('dragging');
+        return;
+      }
+
+      const obj = pickObject(world);
+      if (obj) {
+        selectedId = obj.id;
+        draggingObject = true;
+        dragOffset = { x: obj.cx - world.x, y: obj.cy - world.y };
+      } else {
+        selectedId = null;
+      }
+      updateSelectedInfo();
+      renderObjectList();
+      draw();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!scene) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const dx = x - lastMouse.x;
+      const dy = y - lastMouse.y;
+      lastMouse = { x, y };
+
+      if (panning) {
+        viewport.offsetX += dx;
+        viewport.offsetY -= dy;
+        draw();
+        return;
+      }
+
+      if (!draggingObject || selectedId == null) return;
+      const obj = scene.objects.find(o => o.id === selectedId);
+      if (!obj) return;
+      const world = screenToWorld(x, y);
+      let nx = world.x + dragOffset.x;
+      let ny = world.y + dragOffset.y;
+      if (snapModeCheckbox.checked) {
+        nx = Math.round(nx / 0.05) * 0.05;
+        ny = Math.round(ny / 0.05) * 0.05;
+      }
+      obj.cx = nx;
+      obj.cy = ny;
+      updateSelectedInfo();
+      renderObjectList();
+      draw();
+    });
+
+    window.addEventListener('mouseup', () => {
+      draggingObject = false;
+      panning = false;
+      canvas.classList.remove('dragging');
+    });
+
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const before = screenToWorld(mouseX, mouseY);
+      const factor = e.deltaY < 0 ? 1.08 : 1 / 1.08;
+      viewport.scale *= factor;
+      const after = screenToWorld(mouseX, mouseY);
+      viewport.offsetX += (after.x - before.x) * viewport.scale;
+      viewport.offsetY += (after.y - before.y) * viewport.scale;
+      draw();
+    }, { passive: false });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        spaceHeld = true;
+        e.preventDefault();
+      }
+      if (e.key === 'q' || e.key === 'Q') nudgeRotation(-5);
+      if (e.key === 'e' || e.key === 'E') nudgeRotation(5);
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space') spaceHeld = false;
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+  </script>
+</body>
+</html>
