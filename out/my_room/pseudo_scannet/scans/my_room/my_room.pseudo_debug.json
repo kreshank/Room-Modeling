@@ -1,0 +1,35 @@
+{
+  "source_input_ply": "data/user_scans/room_a.ply",
+  "note": "Generated from geometry; labels are pseudo labels, not human annotations.",
+  "wall_planes": [
+    {
+      "normal": [
+        0.005420297849923372,
+        0.9949173927307129,
+        0.1005488932132721
+      ],
+      "d": -2.2982583045959473
+    },
+    {
+      "normal": [
+        0.026628267019987106,
+        0.9992120862007141,
+        -0.029430989176034927
+      ],
+      "d": 2.3761017322540283
+    },
+    {
+      "normal": [
+        -0.9873486161231995,
+        -0.040123675018548965,
+        0.15340422093868256
+      ],
+      "d": 2.414381980895996
+    }
+  ],
+  "segment_meanings": {
+    "0": "floor_or_unlabeled",
+    "1": "wall",
+    "10+": "object proposal segments"
+  }
+}

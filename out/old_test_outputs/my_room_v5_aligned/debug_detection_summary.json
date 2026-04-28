@@ -1,0 +1,2600 @@
+{
+  "metadata": {
+    "source": "user_ply_geometry_pseudo_scannet_v5",
+    "input_ply": "data\\user_scans\\room_a.ply",
+    "axis_alignment_estimated": false,
+    "axis_alignment_matrix": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.020182788372039795,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "alignment": {
+      "mode": "assume_aligned",
+      "floor_z_translation": 0.020182788372039795
+    },
+    "proposal_mode": "multi_height_band_xy_occupancy_nms",
+    "room_polygon_method": {
+      "method": "raster_occupancy_polygon",
+      "grid_width": 158,
+      "grid_height": 163,
+      "occupied_cells": 14788,
+      "source": "auto_lower_slice_z<=0.35",
+      "source_points": 113896
+    },
+    "wall_filter": "high_only",
+    "floor_height_threshold": 0.06,
+    "object_min_z": 0.06,
+    "object_max_z": 2.15,
+    "occupancy_resolution": 0.035,
+    "raw_vertex_count": 577176,
+    "floor_vertex_count": 55515,
+    "detected_wall_vertex_count": 119867,
+    "base_candidate_vertex_count": 365371,
+    "candidate_vertex_ratio": 0.6330322120115874,
+    "proposal_count_total": 73,
+    "proposal_count_rejected_before_nms": 13,
+    "proposal_count_after_nms": 26,
+    "object_count": 26,
+    "labeling_method": "geometry-only semantic guesses; labels are pseudo labels and should be user-correctable or replaced by ML segmentation",
+    "important_limitations": [
+      "Raw user PLY files do not contain furniture labels or object instances.",
+      "This script produces high-recall geometry proposals, not true object recognition.",
+      "For reliable bed/desk/sofa/counter labels, replace this stage with ScanNet-trained 3D instance segmentation or 2D/3D multi-view labeling."
+    ],
+    "v5_changes": [
+      "anchored object positions from v3 source-point proposals",
+      "no nearest-boundary snapping",
+      "optional centroid-based inward nudging/rejection/preservation",
+      "label priority changed so bed/sofa/table/desk beat cabinet/shelf",
+      "door/window proxies from boundary-near point gaps"
+    ],
+    "v5_position_policy": "nudge",
+    "v5_label_refinement": {
+      "changes": [
+        {
+          "id": 1,
+          "old": "table",
+          "new": "chair_or_stool",
+          "confidence": 0.34,
+          "reason": "small_sitting_height_object"
+        },
+        {
+          "id": 4,
+          "old": "cabinet_or_shelf",
+          "new": "cabinet_or_shelf",
+          "confidence": 0.38,
+          "reason": "tall_wall_or_rectangular_storage_like"
+        },
+        {
+          "id": 6,
+          "old": "chair_or_stool",
+          "new": "chair_or_stool",
+          "confidence": 0.34,
+          "reason": "small_sitting_height_object"
+        },
+        {
+          "id": 7,
+          "old": "furniture_proposal",
+          "new": "chair_or_stool",
+          "confidence": 0.34,
+          "reason": "small_sitting_height_object"
+        },
+        {
+          "id": 8,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 12,
+          "old": "small_object_proposal",
+          "new": "chair_or_stool",
+          "confidence": 0.34,
+          "reason": "small_sitting_height_object"
+        },
+        {
+          "id": 9,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 10,
+          "old": "small_object_proposal",
+          "new": "cabinet_or_shelf",
+          "confidence": 0.38,
+          "reason": "tall_wall_or_rectangular_storage_like"
+        },
+        {
+          "id": 3,
+          "old": "chair_or_stool",
+          "new": "chair_or_stool",
+          "confidence": 0.34,
+          "reason": "small_sitting_height_object"
+        },
+        {
+          "id": 2,
+          "old": "chair_or_stool",
+          "new": "floor_lamp_or_tall_thin_object",
+          "confidence": 0.5,
+          "reason": "small_footprint_tall_object"
+        },
+        {
+          "id": 5,
+          "old": "chair_or_stool",
+          "new": "chair_or_stool",
+          "confidence": 0.34,
+          "reason": "small_sitting_height_object"
+        },
+        {
+          "id": 11,
+          "old": "small_object_proposal",
+          "new": "floor_lamp_or_tall_thin_object",
+          "confidence": 0.5,
+          "reason": "small_footprint_tall_object"
+        },
+        {
+          "id": 18,
+          "old": "small_object_proposal",
+          "new": "floor_lamp_or_tall_thin_object",
+          "confidence": 0.5,
+          "reason": "small_footprint_tall_object"
+        },
+        {
+          "id": 14,
+          "old": "small_object_proposal",
+          "new": "floor_lamp_or_tall_thin_object",
+          "confidence": 0.5,
+          "reason": "small_footprint_tall_object"
+        },
+        {
+          "id": 26,
+          "old": "small_object_proposal",
+          "new": "floor_lamp_or_tall_thin_object",
+          "confidence": 0.5,
+          "reason": "small_footprint_tall_object"
+        },
+        {
+          "id": 17,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 13,
+          "old": "small_object_proposal",
+          "new": "floor_lamp_or_tall_thin_object",
+          "confidence": 0.5,
+          "reason": "small_footprint_tall_object"
+        },
+        {
+          "id": 15,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 20,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 21,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 19,
+          "old": "small_object_proposal",
+          "new": "floor_lamp_or_tall_thin_object",
+          "confidence": 0.5,
+          "reason": "small_footprint_tall_object"
+        },
+        {
+          "id": 24,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 22,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 16,
+          "old": "small_object_proposal",
+          "new": "floor_lamp_or_tall_thin_object",
+          "confidence": 0.5,
+          "reason": "small_footprint_tall_object"
+        },
+        {
+          "id": 23,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        },
+        {
+          "id": 25,
+          "old": "small_object_proposal",
+          "new": "small_object",
+          "confidence": 0.16,
+          "reason": "too_small_or_sparse_for_specific_label"
+        }
+      ]
+    },
+    "v5_position_enforcement": {
+      "policy": "nudge",
+      "input_count": 26,
+      "rejected_room_sized": 0,
+      "rejected_outside": 0,
+      "nudged": 19,
+      "preserved_outside": 0,
+      "objects": [
+        {
+          "id": 1,
+          "label": "chair_or_stool",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            2.629859209060669,
+            -0.9545817971229553
+          ],
+          "center_after": [
+            2.5405689727797673,
+            -0.9352644460195779
+          ],
+          "outside_ratio_before": 0.16608999357713167,
+          "outside_ratio_after": 0.10140336357944918
+        },
+        {
+          "id": 4,
+          "label": "cabinet_or_shelf",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -1.0502971410751343,
+            -5.438880443572998
+          ],
+          "center_after": [
+            -0.44577580629118907,
+            -2.485366270663009
+          ],
+          "outside_ratio_before": 1.0,
+          "outside_ratio_after": 0.0953781781969571
+        },
+        {
+          "id": 6,
+          "label": "chair_or_stool",
+          "action": "kept",
+          "center_before": [
+            -0.39910688996315,
+            -1.3701788187026978
+          ],
+          "center_after": [
+            -0.39910688996315,
+            -1.3701788187026978
+          ],
+          "outside_ratio_before": 0.0,
+          "outside_ratio_after": 0.0
+        },
+        {
+          "id": 7,
+          "label": "chair_or_stool",
+          "action": "kept",
+          "center_before": [
+            0.8268296718597412,
+            -0.5652974247932434
+          ],
+          "center_after": [
+            0.8268296718597412,
+            -0.5652974247932434
+          ],
+          "outside_ratio_before": 0.0,
+          "outside_ratio_after": 0.0
+        },
+        {
+          "id": 8,
+          "label": "small_object",
+          "action": "kept",
+          "center_before": [
+            -0.9132556915283203,
+            0.5842278003692627
+          ],
+          "center_after": [
+            -0.9132556915283203,
+            0.5842278003692627
+          ],
+          "outside_ratio_before": 0.0,
+          "outside_ratio_after": 0.0
+        },
+        {
+          "id": 12,
+          "label": "chair_or_stool",
+          "action": "kept",
+          "center_before": [
+            1.7795544862747192,
+            -1.2086758613586426
+          ],
+          "center_after": [
+            1.7795544862747192,
+            -1.2086758613586426
+          ],
+          "outside_ratio_before": 0.0,
+          "outside_ratio_after": 0.0
+        },
+        {
+          "id": 9,
+          "label": "small_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -1.0588351488113403,
+            -5.041759490966797
+          ],
+          "center_after": [
+            -0.49981183676835184,
+            -2.545625777799017
+          ],
+          "outside_ratio_before": 1.0,
+          "outside_ratio_after": 0.12538541669841663
+        },
+        {
+          "id": 10,
+          "label": "cabinet_or_shelf",
+          "action": "kept",
+          "center_before": [
+            1.9761404991149902,
+            1.117495059967041
+          ],
+          "center_after": [
+            1.9761404991149902,
+            1.117495059967041
+          ],
+          "outside_ratio_before": 0.18760329531486572,
+          "outside_ratio_after": 0.18760329531486572
+        },
+        {
+          "id": 3,
+          "label": "chair_or_stool",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -1.4169108867645264,
+            -4.816875457763672
+          ],
+          "center_after": [
+            -0.7010913924019039,
+            -2.5520498257898363
+          ],
+          "outside_ratio_before": 0.9999999999999999,
+          "outside_ratio_after": 0.21429109861272486
+        },
+        {
+          "id": 2,
+          "label": "floor_lamp_or_tall_thin_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -2.7633180618286133,
+            0.010276572778820992
+          ],
+          "center_after": [
+            -2.5824427265835874,
+            -0.015564063726516506
+          ],
+          "outside_ratio_before": 0.7435245335216687,
+          "outside_ratio_after": 0.22688323641267136
+        },
+        {
+          "id": 5,
+          "label": "chair_or_stool",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            3.02377986907959,
+            -0.3715818226337433
+          ],
+          "center_after": [
+            2.475647693303041,
+            -0.3735173932161927
+          ],
+          "outside_ratio_before": 1.0000000000000002,
+          "outside_ratio_after": 0.21411511675298625
+        },
+        {
+          "id": 11,
+          "label": "floor_lamp_or_tall_thin_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -1.9596937894821167,
+            1.9611797332763672
+          ],
+          "center_after": [
+            -1.8430272958031582,
+            1.8205648171128996
+          ],
+          "outside_ratio_before": 0.6226815144049702,
+          "outside_ratio_after": 0.0
+        },
+        {
+          "id": 18,
+          "label": "floor_lamp_or_tall_thin_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            0.20462319254875183,
+            2.714430809020996
+          ],
+          "center_after": [
+            0.152844551361051,
+            1.9854198498188875
+          ],
+          "outside_ratio_before": 0.9999999999999998,
+          "outside_ratio_after": 0.19362799178983334
+        },
+        {
+          "id": 14,
+          "label": "floor_lamp_or_tall_thin_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            3.1075050830841064,
+            -1.5864964723587036
+          ],
+          "center_after": [
+            2.42559844766792,
+            -1.3235490500564513
+          ],
+          "outside_ratio_before": 0.9999999999999999,
+          "outside_ratio_after": 0.022193803396585002
+        },
+        {
+          "id": 26,
+          "label": "floor_lamp_or_tall_thin_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -3.0292248725891113,
+            0.0713542103767395
+          ],
+          "center_after": [
+            -2.577533721219711,
+            0.003363310299271699
+          ],
+          "outside_ratio_before": 1.0000000000000002,
+          "outside_ratio_after": 0.0719536911337691
+        },
+        {
+          "id": 17,
+          "label": "small_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -2.6413326263427734,
+            -1.9766002893447876
+          ],
+          "center_after": [
+            -2.3289690511516965,
+            -1.7869598440968022
+          ],
+          "outside_ratio_before": 1.0,
+          "outside_ratio_after": 0.02112311411315296
+        },
+        {
+          "id": 13,
+          "label": "floor_lamp_or_tall_thin_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -2.9798712730407715,
+            -2.1264238357543945
+          ],
+          "center_after": [
+            -2.3499529881320527,
+            -1.7558284220514173
+          ],
+          "outside_ratio_before": 1.0,
+          "outside_ratio_after": 0.031331049748866815
+        },
+        {
+          "id": 15,
+          "label": "small_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -1.0690133571624756,
+            -2.7123138904571533
+          ],
+          "center_after": [
+            -0.9937267622681948,
+            -2.545833999706871
+          ],
+          "outside_ratio_before": 0.8077873939003918,
+          "outside_ratio_after": 0.0
+        },
+        {
+          "id": 20,
+          "label": "small_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -0.02233625203371048,
+            -2.4634501934051514
+          ],
+          "center_after": [
+            -0.02202851436185455,
+            -2.372094779519188
+          ],
+          "outside_ratio_before": 0.3237221230868412,
+          "outside_ratio_after": 0.039550030452517655
+        },
+        {
+          "id": 21,
+          "label": "small_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -3.252171516418457,
+            -0.8837808966636658
+          ],
+          "center_after": [
+            -2.6202189778658997,
+            -0.7858758400744057
+          ],
+          "outside_ratio_before": 1.0,
+          "outside_ratio_after": 0.13521689985578256
+        },
+        {
+          "id": 19,
+          "label": "floor_lamp_or_tall_thin_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -1.713076114654541,
+            -2.891756057739258
+          ],
+          "center_after": [
+            -1.3547360490261955,
+            -2.362094082084746
+          ],
+          "outside_ratio_before": 0.8716213190680319,
+          "outside_ratio_after": 0.03062152519346421
+        },
+        {
+          "id": 24,
+          "label": "small_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            3.0292599201202393,
+            -0.003869136795401573
+          ],
+          "center_after": [
+            2.213335663995835,
+            -0.105289166950282
+          ],
+          "outside_ratio_before": 0.9999999999999998,
+          "outside_ratio_after": 0.040491994803894954
+        },
+        {
+          "id": 22,
+          "label": "small_object",
+          "action": "kept",
+          "center_before": [
+            -1.1798259019851685,
+            2.203373670578003
+          ],
+          "center_after": [
+            -1.1798259019851685,
+            2.203373670578003
+          ],
+          "outside_ratio_before": 0.0,
+          "outside_ratio_after": 0.0
+        },
+        {
+          "id": 16,
+          "label": "floor_lamp_or_tall_thin_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -0.6983329653739929,
+            -2.7134385108947754
+          ],
+          "center_after": [
+            -0.672646025147559,
+            -2.6257681769695873
+          ],
+          "outside_ratio_before": 0.27277110940435034,
+          "outside_ratio_after": 0.0825118217906183
+        },
+        {
+          "id": 23,
+          "label": "small_object",
+          "action": "nudged_toward_room_centroid",
+          "center_before": [
+            -2.49945068359375,
+            0.20368623733520508
+          ],
+          "center_after": [
+            -2.4105352340510438,
+            0.18271127174837185
+          ],
+          "outside_ratio_before": 0.39443464066656375,
+          "outside_ratio_after": 0.09939533906534923
+        },
+        {
+          "id": 25,
+          "label": "small_object",
+          "action": "kept",
+          "center_before": [
+            -1.2921007871627808,
+            2.1306986808776855
+          ],
+          "center_after": [
+            -1.2921007871627808,
+            2.1306986808776855
+          ],
+          "outside_ratio_before": 0.0,
+          "outside_ratio_after": 0.0
+        }
+      ],
+      "output_count": 26
+    },
+    "v5_architecture_detection": {
+      "enabled": true,
+      "raw_proxy_count": 0,
+      "output_proxy_count": 1,
+      "edges": []
+    },
+    "v5_warning": "Labels and doors/windows are geometry-only guesses. Use editor correction or ML segmentation for reliable semantics."
+  },
+  "band_debug": [
+    {
+      "selected_points": 204246,
+      "grid_width": 191,
+      "grid_height": 254,
+      "components_raw": 23,
+      "components_kept_by_cells": 23,
+      "band": "low_large",
+      "z_min": 0.06,
+      "z_max": 0.95,
+      "proposals_total": 15,
+      "proposals_kept_pre_nms": 10,
+      "proposals_rejected": 5
+    },
+    {
+      "selected_points": 211595,
+      "grid_width": 191,
+      "grid_height": 257,
+      "components_raw": 19,
+      "components_kept_by_cells": 19,
+      "band": "tabletop",
+      "z_min": 0.35,
+      "z_max": 1.25,
+      "proposals_total": 17,
+      "proposals_kept_pre_nms": 15,
+      "proposals_rejected": 2
+    },
+    {
+      "selected_points": 177374,
+      "grid_width": 191,
+      "grid_height": 258,
+      "components_raw": 15,
+      "components_kept_by_cells": 15,
+      "band": "countertop",
+      "z_min": 0.62,
+      "z_max": 1.4,
+      "proposals_total": 14,
+      "proposals_kept_pre_nms": 12,
+      "proposals_rejected": 2
+    },
+    {
+      "selected_points": 176020,
+      "grid_width": 190,
+      "grid_height": 256,
+      "components_raw": 16,
+      "components_kept_by_cells": 16,
+      "band": "tall",
+      "z_min": 0.9,
+      "z_max": 2.15,
+      "proposals_total": 12,
+      "proposals_kept_pre_nms": 11,
+      "proposals_rejected": 1
+    },
+    {
+      "selected_points": 365371,
+      "grid_width": 191,
+      "grid_height": 258,
+      "components_raw": 17,
+      "components_kept_by_cells": 17,
+      "band": "all",
+      "z_min": 0.06,
+      "z_max": 2.15,
+      "proposals_total": 15,
+      "proposals_kept_pre_nms": 12,
+      "proposals_rejected": 3
+    }
+  ],
+  "room_debug": {
+    "method": "raster_occupancy_polygon",
+    "grid_width": 158,
+    "grid_height": 163,
+    "occupied_cells": 14788,
+    "source": "auto_lower_slice_z<=0.35",
+    "source_points": 113896
+  },
+  "proposals": [
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.805448465277446,
+      "points": 218,
+      "cx": -0.9794179201126099,
+      "cy": -5.5450544357299805,
+      "width": 0.34969428539276126,
+      "depth": 0.25549047052860263,
+      "height": 0.5521387308835983,
+      "area": 0.08934355751616004,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.46450237172763,
+      "points": 9,
+      "cx": -0.8357850909233093,
+      "cy": -5.429162979125977,
+      "width": 0.21921544507145882,
+      "depth": 0.17901850663125515,
+      "height": 0.006390005350112915,
+      "area": 0.0392436216071985,
+      "reject_reason": "min_height"
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.5669527667042733,
+      "points": 26,
+      "cx": -1.0953348875045776,
+      "cy": -5.2933268547058105,
+      "width": 0.2708966022729874,
+      "depth": 0.17235650293529034,
+      "height": 0.054000020027160645,
+      "area": 0.04669079102482433,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.6991610488224742,
+      "points": 93,
+      "cx": -1.0588351488113403,
+      "cy": -5.041759490966797,
+      "width": 0.5317733919620514,
+      "depth": 0.2429431563615799,
+      "height": 0.03824999928474426,
+      "area": 0.12919070631236437,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "chair_or_stool",
+      "score": 2.8213480081870537,
+      "points": 727,
+      "cx": -1.4169108867645264,
+      "cy": -4.816875457763672,
+      "width": 0.5472558474540711,
+      "depth": 0.21412115529179573,
+      "height": 0.6119999587535858,
+      "area": 0.11717905429705643,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "bed",
+      "score": 4.4241562488675115,
+      "points": 201722,
+      "cx": 0.01728557050228119,
+      "cy": -0.11916224658489227,
+      "width": 7.680050048828125,
+      "depth": 6.083761367797852,
+      "height": 0.883124977350235,
+      "area": 46.723591789814556,
+      "reject_reason": "max_area_absolute"
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.5051474381064476,
+      "points": 14,
+      "cx": -1.0690133571624756,
+      "cy": -2.7123138904571533,
+      "width": 0.19487491607666016,
+      "depth": 0.17125002093613148,
+      "height": 0.02010369300842285,
+      "area": 0.03337233345805492,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.491639608510831,
+      "points": 12,
+      "cx": -2.6413326263427734,
+      "cy": -1.9766002893447876,
+      "width": 0.21092637985944748,
+      "depth": 0.19145233169198037,
+      "height": 0.022128760814666748,
+      "area": 0.040382347239439585,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.4838927532466724,
+      "points": 11,
+      "cx": -0.33629557490348816,
+      "cy": -1.893326997756958,
+      "width": 0.2506636416912079,
+      "depth": 0.17960673928260804,
+      "height": 0.018000006675720215,
+      "area": 0.04502087934086186,
+      "reject_reason": "min_height"
+    },
+    {
+      "band": "low_large",
+      "label": "chair_or_stool",
+      "score": 2.72024664348123,
+      "points": 312,
+      "cx": 3.02377986907959,
+      "cy": -0.3715818226337433,
+      "width": 0.4486272966861725,
+      "depth": 0.23322263717651368,
+      "height": 0.30326640605926514,
+      "area": 0.10463004124251937,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.9399950166913025,
+      "points": 817,
+      "cx": -2.755511999130249,
+      "cy": 0.016450216993689537,
+      "width": 0.3302774912118912,
+      "depth": 0.290930632352829,
+      "height": 0.593999981880188,
+      "area": 0.09608783937018144,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.4285160478850323,
+      "points": 6,
+      "cx": 3.0290794372558594,
+      "cy": -0.0038512195460498333,
+      "width": 0.17924971491098404,
+      "depth": 0.16562278740108013,
+      "height": 0.019124984741210938,
+      "area": 0.029687837424406133,
+      "reject_reason": "min_height"
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.4536729610805417,
+      "points": 8,
+      "cx": -2.49945068359375,
+      "cy": 0.20368623733520508,
+      "width": 0.164500150680542,
+      "depth": 0.16,
+      "height": 0.02637001872062683,
+      "area": 0.02632002410888672,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.781797201366017,
+      "points": 210,
+      "cx": -0.9132556915283203,
+      "cy": 0.5842278003692627,
+      "width": 0.41974592566490176,
+      "depth": 0.3517666792869568,
+      "height": 0.03692249953746796,
+      "area": 0.14765263041537233,
+      "reject_reason": null
+    },
+    {
+      "band": "low_large",
+      "label": "small_object_proposal",
+      "score": 1.591438204524004,
+      "points": 33,
+      "cx": 2.54602313041687,
+      "cy": 2.034301996231079,
+      "width": 0.4006494021415711,
+      "depth": 0.21593442916870118,
+      "height": 0.0030150413513183594,
+      "area": 0.08651399994822155,
+      "reject_reason": "min_height"
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.7683685023542315,
+      "points": 161,
+      "cx": -0.9875479340553284,
+      "cy": -5.550296783447266,
+      "width": 0.33699535191059116,
+      "depth": 0.22697273254394532,
+      "height": 0.43919986486434937,
+      "area": 0.07648875587775533,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.5192044985585835,
+      "points": 15,
+      "cx": -1.1138405799865723,
+      "cy": -5.43911075592041,
+      "width": 0.1809382064640522,
+      "depth": 0.16976144708693028,
+      "height": 0.17747986316680908,
+      "area": 0.030716331762651265,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.5669527667042733,
+      "points": 26,
+      "cx": -1.0953348875045776,
+      "cy": -5.2933268547058105,
+      "width": 0.2708966022729874,
+      "depth": 0.17235650293529034,
+      "height": 0.054000020027160645,
+      "area": 0.04669079102482433,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "chair_or_stool",
+      "score": 2.778381297965938,
+      "points": 527,
+      "cx": -1.4249976873397827,
+      "cy": -4.8173651695251465,
+      "width": 0.5395174062252045,
+      "depth": 0.19965381532907486,
+      "height": 0.4139999747276306,
+      "area": 0.10771670858930844,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "sofa",
+      "score": 4.164043752551079,
+      "points": 209330,
+      "cx": -0.0038217902183532715,
+      "cy": -0.21916016936302185,
+      "width": 7.949602279663086,
+      "depth": 6.1982909774780275,
+      "height": 0.8808750510215759,
+      "area": 49.273948084574464,
+      "reject_reason": "max_area_absolute"
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.4642953511305645,
+      "points": 9,
+      "cx": -1.713076114654541,
+      "cy": -2.891756057739258,
+      "width": 0.1825000325590372,
+      "depth": 0.16337505247443915,
+      "height": 0.021104931831359863,
+      "area": 0.029815952395919557,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.4581364958231158,
+      "points": 8,
+      "cx": -0.02233625203371048,
+      "cy": -2.4634501934051514,
+      "width": 0.18307808212935925,
+      "depth": 0.17950189471244812,
+      "height": 0.1025550365447998,
+      "area": 0.03286286262254117,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.5445636315267064,
+      "points": 20,
+      "cx": -2.9798712730407715,
+      "cy": -2.1264238357543945,
+      "width": 0.2182537278532982,
+      "depth": 0.18285228297114373,
+      "height": 0.12241137027740479,
+      "area": 0.03990819240493827,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.4838927532466724,
+      "points": 11,
+      "cx": -0.33629557490348816,
+      "cy": -1.893326997756958,
+      "width": 0.2506636416912079,
+      "depth": 0.17960673928260804,
+      "height": 0.018000006675720215,
+      "area": 0.04502087934086186,
+      "reject_reason": "min_height"
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.502755799632392,
+      "points": 13,
+      "cx": 3.0814249515533447,
+      "cy": -1.5878077745437622,
+      "width": 0.23554398477077484,
+      "depth": 0.1807649189978838,
+      "height": 0.09184515476226807,
+      "area": 0.04257808932752789,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.456538946944565,
+      "points": 8,
+      "cx": -3.252171516418457,
+      "cy": -0.8837808966636658,
+      "width": 0.18131963148713112,
+      "depth": 0.16585263408720494,
+      "height": 0.07618510723114014,
+      "area": 0.030072338493862,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "chair_or_stool",
+      "score": 2.72024664348123,
+      "points": 312,
+      "cx": 3.02377986907959,
+      "cy": -0.3715818226337433,
+      "width": 0.4486272966861725,
+      "depth": 0.23322263717651368,
+      "height": 0.30326640605926514,
+      "area": 0.10463004124251937,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "chair_or_stool",
+      "score": 2.87711502906987,
+      "points": 1120,
+      "cx": -2.7633180618286133,
+      "cy": 0.010276572778820992,
+      "width": 0.3494651055335999,
+      "depth": 0.3208083844184876,
+      "height": 0.874125063419342,
+      "area": 0.11211133591687045,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.4421323118498117,
+      "points": 7,
+      "cx": 3.0292599201202393,
+      "cy": -0.003869136795401573,
+      "width": 0.1791718228161335,
+      "depth": 0.16562492897734046,
+      "height": 0.02441251277923584,
+      "area": 0.029675320428662742,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.4536729610805417,
+      "points": 8,
+      "cx": -2.49945068359375,
+      "cy": 0.20368623733520508,
+      "width": 0.164500150680542,
+      "depth": 0.16,
+      "height": 0.02637001872062683,
+      "area": 0.02632002410888672,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.4420429652644697,
+      "points": 7,
+      "cx": -1.2921007871627808,
+      "cy": 2.1306986808776855,
+      "width": 0.16249024364165962,
+      "depth": 0.16106724933721125,
+      "height": 0.029632508754730225,
+      "area": 0.026171856587495396,
+      "reject_reason": null
+    },
+    {
+      "band": "tabletop",
+      "label": "small_object_proposal",
+      "score": 1.454473624428706,
+      "points": 8,
+      "cx": -1.1798259019851685,
+      "cy": 2.203373670578003,
+      "width": 0.17462507247924805,
+      "depth": 0.1690001318603754,
+      "height": 0.03600001335144043,
+      "area": 0.029511660275120533,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.7461978911932436,
+      "points": 107,
+      "cx": -1.006119728088379,
+      "cy": -5.552834510803223,
+      "width": 0.37563936769962314,
+      "depth": 0.24717257529497147,
+      "height": 0.7739998698234558,
+      "area": 0.09284774989649057,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.5192044985585835,
+      "points": 15,
+      "cx": -1.1138405799865723,
+      "cy": -5.43911075592041,
+      "width": 0.1809382064640522,
+      "depth": 0.16976144708693028,
+      "height": 0.17747986316680908,
+      "area": 0.030716331762651265,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.6290153753453316,
+      "points": 34,
+      "cx": -1.1011505126953125,
+      "cy": -5.278943061828613,
+      "width": 0.26985843837261203,
+      "depth": 0.17715124025940895,
+      "height": 0.7739998698234558,
+      "area": 0.0478057570521755,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.7587002129401408,
+      "points": 169,
+      "cx": -1.4469671249389648,
+      "cy": -4.777576446533203,
+      "width": 0.4317019319534302,
+      "depth": 0.18346847578883171,
+      "height": 0.14399999380111694,
+      "area": 0.07920369545058979,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "sofa",
+      "score": 4.158699993491173,
+      "points": 174730,
+      "cx": -0.046304523944854736,
+      "cy": -0.21950815618038177,
+      "width": 7.931115303039551,
+      "depth": 6.14291015625,
+      "height": 0.7739998698234558,
+      "area": 48.72012874543145,
+      "reject_reason": "max_area_absolute"
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.4642953511305645,
+      "points": 9,
+      "cx": -1.713076114654541,
+      "cy": -2.891756057739258,
+      "width": 0.1825000325590372,
+      "depth": 0.16337505247443915,
+      "height": 0.021104931831359863,
+      "area": 0.029815952395919557,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.5005030218189024,
+      "points": 13,
+      "cx": -0.6983329653739929,
+      "cy": -2.7134385108947754,
+      "width": 0.16674996804445982,
+      "depth": 0.1645000584796071,
+      "height": 0.07708501815795898,
+      "area": 0.02743037949478626,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.4838927532466724,
+      "points": 11,
+      "cx": -0.33629557490348816,
+      "cy": -1.893326997756958,
+      "width": 0.2506636416912079,
+      "depth": 0.17960673928260804,
+      "height": 0.018000006675720215,
+      "area": 0.04502087934086186,
+      "reject_reason": "min_height"
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.526254620126461,
+      "points": 15,
+      "cx": 3.1075050830841064,
+      "cy": -1.5864964723587036,
+      "width": 0.28726187705993655,
+      "depth": 0.1913149392604828,
+      "height": 0.26999998092651367,
+      "area": 0.054957488561574036,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "table",
+      "score": 3.305683203927045,
+      "points": 402,
+      "cx": 2.629859209060669,
+      "cy": -0.9545817971229553,
+      "width": 0.5120458936691284,
+      "depth": 0.44982877731323245,
+      "height": 0.05512499809265137,
+      "area": 0.23033297827744548,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "furniture_proposal",
+      "score": 2.2249866270404213,
+      "points": 890,
+      "cx": 0.8268296718597412,
+      "cy": -0.5652974247932434,
+      "width": 0.5832770502567292,
+      "depth": 0.28131567299366,
+      "height": 0.18687373399734497,
+      "area": 0.16408497593472862,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.7070122888944734,
+      "points": 104,
+      "cx": 3.0329430103302,
+      "cy": -0.3217104375362396,
+      "width": 0.3479081726074219,
+      "depth": 0.20616083949804306,
+      "height": 0.08887499570846558,
+      "area": 0.07172504093297617,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "chair_or_stool",
+      "score": 2.847918757615987,
+      "points": 864,
+      "cx": -2.80289363861084,
+      "cy": 0.020291630178689957,
+      "width": 0.39894965648651126,
+      "depth": 0.32449742019176486,
+      "height": 0.7739998698234558,
+      "area": 0.12945813431626368,
+      "reject_reason": null
+    },
+    {
+      "band": "countertop",
+      "label": "small_object_proposal",
+      "score": 1.4421323118498117,
+      "points": 7,
+      "cx": 3.0292599201202393,
+      "cy": -0.003869136795401573,
+      "width": 0.1791718228161335,
+      "depth": 0.16562492897734046,
+      "height": 0.02441251277923584,
+      "area": 0.029675320428662742,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "chair_or_stool",
+      "score": 2.51375822634106,
+      "points": 215,
+      "cx": -1.0661067962646484,
+      "cy": -5.428000450134277,
+      "width": 0.5451787447929383,
+      "depth": 0.3691177105903626,
+      "height": 0.722137451171875,
+      "area": 0.20123513014049693,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "table",
+      "score": 3.540299995541573,
+      "points": 173204,
+      "cx": -0.02572830766439438,
+      "cy": -0.25105491280555725,
+      "width": 7.9103318786621095,
+      "depth": 6.032747898101807,
+      "height": 1.2059999108314514,
+      "area": 47.721038014286556,
+      "reject_reason": "max_area_absolute"
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.2642953511305646,
+      "points": 9,
+      "cx": -1.713076114654541,
+      "cy": -2.891756057739258,
+      "width": 0.1825000325590372,
+      "depth": 0.16337505247443915,
+      "height": 0.021104931831359863,
+      "area": 0.029815952395919557,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.4632181688206989,
+      "points": 57,
+      "cx": -0.7004837393760681,
+      "cy": -2.7227282524108887,
+      "width": 0.20908467084169388,
+      "depth": 0.17931095495820046,
+      "height": 0.4684950113296509,
+      "area": 0.03749117199574514,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "chair_or_stool",
+      "score": 2.6750274875953926,
+      "points": 1355,
+      "cx": -0.39910688996315,
+      "cy": -1.3701788187026978,
+      "width": 0.6674036121368409,
+      "depth": 0.27087688803672794,
+      "height": 0.3143923878669739,
+      "area": 0.18078421352009882,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.4920658349940916,
+      "points": 78,
+      "cx": 3.0771963596343994,
+      "cy": -1.5950324535369873,
+      "width": 0.3699758237600327,
+      "depth": 0.21657099932432175,
+      "height": 0.342168927192688,
+      "area": 0.08012603387754942,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.5727378885922596,
+      "points": 191,
+      "cx": 1.7795544862747192,
+      "cy": -1.2086758613586426,
+      "width": 0.46435195565223697,
+      "depth": 0.31739604830741885,
+      "height": 0.04500007629394531,
+      "area": 0.14738347574784183,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.2421323118498115,
+      "points": 7,
+      "cx": 3.0292599201202393,
+      "cy": -0.003869136795401573,
+      "width": 0.1791718228161335,
+      "depth": 0.16562492897734046,
+      "height": 0.02441251277923584,
+      "area": 0.029675320428662742,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.428666694804072,
+      "points": 49,
+      "cx": -3.0292248725891113,
+      "cy": 0.0713542103767395,
+      "width": 0.25176684916019443,
+      "depth": 0.18691512554883957,
+      "height": 0.05516982078552246,
+      "area": 0.047059032219813494,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.6699864491889145,
+      "points": 484,
+      "cx": 1.9761404991149902,
+      "cy": 1.117495059967041,
+      "width": 0.40343574047088626,
+      "depth": 0.3078199660778046,
+      "height": 0.18306005001068115,
+      "area": 0.1241855759463222,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.6211863971358411,
+      "points": 291,
+      "cx": -1.9596937894821167,
+      "cy": 1.9611797332763672,
+      "width": 0.35420005381107333,
+      "depth": 0.23340677082538605,
+      "height": 0.3048749566078186,
+      "area": 0.0826726907862206,
+      "reject_reason": null
+    },
+    {
+      "band": "tall",
+      "label": "small_object_proposal",
+      "score": 1.4689791187168906,
+      "points": 69,
+      "cx": 0.20462319254875183,
+      "cy": 2.714430809020996,
+      "width": 0.30860118925571445,
+      "depth": 0.21084136500954628,
+      "height": 0.15246009826660156,
+      "area": 0.06506589598624417,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "cabinet_or_shelf",
+      "score": 2.7704327919065026,
+      "points": 459,
+      "cx": -1.0502971410751343,
+      "cy": -5.438880443572998,
+      "width": 0.585457626581192,
+      "depth": 0.3708234763145447,
+      "height": 1.5119999945163727,
+      "area": 0.21710143232370022,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 0.9645023717276302,
+      "points": 9,
+      "cx": -0.8357850909233093,
+      "cy": -5.429162979125977,
+      "width": 0.21921544507145882,
+      "depth": 0.17901850663125515,
+      "height": 0.006390005350112915,
+      "area": 0.0392436216071985,
+      "reject_reason": "min_height"
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 1.1991610488224742,
+      "points": 93,
+      "cx": -1.0588351488113403,
+      "cy": -5.041759490966797,
+      "width": 0.5317733919620514,
+      "depth": 0.2429431563615799,
+      "height": 0.03824999928474426,
+      "area": 0.12919070631236437,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "chair_or_stool",
+      "score": 2.3213480081870537,
+      "points": 727,
+      "cx": -1.4169108867645264,
+      "cy": -4.816875457763672,
+      "width": 0.5472558474540711,
+      "depth": 0.21412115529179573,
+      "height": 0.6119999587535858,
+      "area": 0.11717905429705643,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "shelf_or_bookcase",
+      "score": 3.24,
+      "points": 363266,
+      "cx": -0.034901365637779236,
+      "cy": -0.21233631670475006,
+      "width": 7.914987716674805,
+      "depth": 6.147693309783936,
+      "height": 2.031749740242958,
+      "area": 48.65891703282373,
+      "reject_reason": "max_area_absolute"
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 0.9642953511305645,
+      "points": 9,
+      "cx": -1.713076114654541,
+      "cy": -2.891756057739258,
+      "width": 0.1825000325590372,
+      "depth": 0.16337505247443915,
+      "height": 0.021104931831359863,
+      "area": 0.029815952395919557,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 1.163218168820699,
+      "points": 57,
+      "cx": -0.7004837393760681,
+      "cy": -2.7227282524108887,
+      "width": 0.20908467084169388,
+      "depth": 0.17931095495820046,
+      "height": 0.4684950113296509,
+      "area": 0.03749117199574514,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 0.9838927532466724,
+      "points": 11,
+      "cx": -0.33629557490348816,
+      "cy": -1.893326997756958,
+      "width": 0.2506636416912079,
+      "depth": 0.17960673928260804,
+      "height": 0.018000006675720215,
+      "area": 0.04502087934086186,
+      "reject_reason": "min_height"
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 1.1920658349940914,
+      "points": 78,
+      "cx": 3.0771963596343994,
+      "cy": -1.5950324535369873,
+      "width": 0.3699758237600327,
+      "depth": 0.21657099932432175,
+      "height": 0.342168927192688,
+      "area": 0.08012603387754942,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "chair_or_stool",
+      "score": 2.2202466434812305,
+      "points": 312,
+      "cx": 3.02377986907959,
+      "cy": -0.3715818226337433,
+      "width": 0.4486272966861725,
+      "depth": 0.23322263717651368,
+      "height": 0.30326640605926514,
+      "area": 0.10463004124251937,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 0.9421323118498117,
+      "points": 7,
+      "cx": 3.0292599201202393,
+      "cy": -0.003869136795401573,
+      "width": 0.1791718228161335,
+      "depth": 0.16562492897734046,
+      "height": 0.02441251277923584,
+      "area": 0.029675320428662742,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 1.1286666948040722,
+      "points": 49,
+      "cx": -3.0292248725891113,
+      "cy": 0.0713542103767395,
+      "width": 0.25176684916019443,
+      "depth": 0.18691512554883957,
+      "height": 0.05516982078552246,
+      "area": 0.047059032219813494,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 0.9536729610805421,
+      "points": 8,
+      "cx": -2.49945068359375,
+      "cy": 0.20368623733520508,
+      "width": 0.164500150680542,
+      "depth": 0.16,
+      "height": 0.02637001872062683,
+      "area": 0.02632002410888672,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 1.281797201366017,
+      "points": 210,
+      "cx": -0.9132556915283203,
+      "cy": 0.5842278003692627,
+      "width": 0.41974592566490176,
+      "depth": 0.3517666792869568,
+      "height": 0.03692249953746796,
+      "area": 0.14765263041537233,
+      "reject_reason": null
+    },
+    {
+      "band": "all",
+      "label": "small_object_proposal",
+      "score": 1.1689791187168905,
+      "points": 69,
+      "cx": 0.20462319254875183,
+      "cy": 2.714430809020996,
+      "width": 0.30860118925571445,
+      "depth": 0.21084136500954628,
+      "height": 0.15246009826660156,
+      "area": 0.06506589598624417,
+      "reject_reason": null
+    }
+  ],
+  "rejected_summary": {
+    "min_height": 8,
+    "max_area_absolute": 5
+  },
+  "kept_proposals": [
+    {
+      "label": "table",
+      "band": "countertop",
+      "score": 3.305683203927045,
+      "points": 402,
+      "width": 0.5120458936691284,
+      "depth": 0.44982877731323245,
+      "height": 0.05512499809265137,
+      "area": 0.23033297827744548
+    },
+    {
+      "label": "chair_or_stool",
+      "band": "tabletop",
+      "score": 2.87711502906987,
+      "points": 1120,
+      "width": 0.3494651055335999,
+      "depth": 0.3208083844184876,
+      "height": 0.874125063419342,
+      "area": 0.11211133591687045
+    },
+    {
+      "label": "chair_or_stool",
+      "band": "low_large",
+      "score": 2.8213480081870537,
+      "points": 727,
+      "width": 0.5472558474540711,
+      "depth": 0.21412115529179573,
+      "height": 0.6119999587535858,
+      "area": 0.11717905429705643
+    },
+    {
+      "label": "cabinet_or_shelf",
+      "band": "all",
+      "score": 2.7704327919065026,
+      "points": 459,
+      "width": 0.585457626581192,
+      "depth": 0.3708234763145447,
+      "height": 1.5119999945163727,
+      "area": 0.21710143232370022
+    },
+    {
+      "label": "chair_or_stool",
+      "band": "low_large",
+      "score": 2.72024664348123,
+      "points": 312,
+      "width": 0.4486272966861725,
+      "depth": 0.23322263717651368,
+      "height": 0.30326640605926514,
+      "area": 0.10463004124251937
+    },
+    {
+      "label": "chair_or_stool",
+      "band": "tall",
+      "score": 2.6750274875953926,
+      "points": 1355,
+      "width": 0.6674036121368409,
+      "depth": 0.27087688803672794,
+      "height": 0.3143923878669739,
+      "area": 0.18078421352009882
+    },
+    {
+      "label": "furniture_proposal",
+      "band": "countertop",
+      "score": 2.2249866270404213,
+      "points": 890,
+      "width": 0.5832770502567292,
+      "depth": 0.28131567299366,
+      "height": 0.18687373399734497,
+      "area": 0.16408497593472862
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "low_large",
+      "score": 1.781797201366017,
+      "points": 210,
+      "width": 0.41974592566490176,
+      "depth": 0.3517666792869568,
+      "height": 0.03692249953746796,
+      "area": 0.14765263041537233
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "low_large",
+      "score": 1.6991610488224742,
+      "points": 93,
+      "width": 0.5317733919620514,
+      "depth": 0.2429431563615799,
+      "height": 0.03824999928474426,
+      "area": 0.12919070631236437
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tall",
+      "score": 1.6699864491889145,
+      "points": 484,
+      "width": 0.40343574047088626,
+      "depth": 0.3078199660778046,
+      "height": 0.18306005001068115,
+      "area": 0.1241855759463222
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tall",
+      "score": 1.6211863971358411,
+      "points": 291,
+      "width": 0.35420005381107333,
+      "depth": 0.23340677082538605,
+      "height": 0.3048749566078186,
+      "area": 0.0826726907862206
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tall",
+      "score": 1.5727378885922596,
+      "points": 191,
+      "width": 0.46435195565223697,
+      "depth": 0.31739604830741885,
+      "height": 0.04500007629394531,
+      "area": 0.14738347574784183
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tabletop",
+      "score": 1.5445636315267064,
+      "points": 20,
+      "width": 0.2182537278532982,
+      "depth": 0.18285228297114373,
+      "height": 0.12241137027740479,
+      "area": 0.03990819240493827
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "countertop",
+      "score": 1.526254620126461,
+      "points": 15,
+      "width": 0.28726187705993655,
+      "depth": 0.1913149392604828,
+      "height": 0.26999998092651367,
+      "area": 0.054957488561574036
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "low_large",
+      "score": 1.5051474381064476,
+      "points": 14,
+      "width": 0.19487491607666016,
+      "depth": 0.17125002093613148,
+      "height": 0.02010369300842285,
+      "area": 0.03337233345805492
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "countertop",
+      "score": 1.5005030218189024,
+      "points": 13,
+      "width": 0.16674996804445982,
+      "depth": 0.1645000584796071,
+      "height": 0.07708501815795898,
+      "area": 0.02743037949478626
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "low_large",
+      "score": 1.491639608510831,
+      "points": 12,
+      "width": 0.21092637985944748,
+      "depth": 0.19145233169198037,
+      "height": 0.022128760814666748,
+      "area": 0.040382347239439585
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tall",
+      "score": 1.4689791187168906,
+      "points": 69,
+      "width": 0.30860118925571445,
+      "depth": 0.21084136500954628,
+      "height": 0.15246009826660156,
+      "area": 0.06506589598624417
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tabletop",
+      "score": 1.4642953511305645,
+      "points": 9,
+      "width": 0.1825000325590372,
+      "depth": 0.16337505247443915,
+      "height": 0.021104931831359863,
+      "area": 0.029815952395919557
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tabletop",
+      "score": 1.4581364958231158,
+      "points": 8,
+      "width": 0.18307808212935925,
+      "depth": 0.17950189471244812,
+      "height": 0.1025550365447998,
+      "area": 0.03286286262254117
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tabletop",
+      "score": 1.456538946944565,
+      "points": 8,
+      "width": 0.18131963148713112,
+      "depth": 0.16585263408720494,
+      "height": 0.07618510723114014,
+      "area": 0.030072338493862
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tabletop",
+      "score": 1.454473624428706,
+      "points": 8,
+      "width": 0.17462507247924805,
+      "depth": 0.1690001318603754,
+      "height": 0.03600001335144043,
+      "area": 0.029511660275120533
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "low_large",
+      "score": 1.4536729610805417,
+      "points": 8,
+      "width": 0.164500150680542,
+      "depth": 0.16,
+      "height": 0.02637001872062683,
+      "area": 0.02632002410888672
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tabletop",
+      "score": 1.4421323118498117,
+      "points": 7,
+      "width": 0.1791718228161335,
+      "depth": 0.16562492897734046,
+      "height": 0.02441251277923584,
+      "area": 0.029675320428662742
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tabletop",
+      "score": 1.4420429652644697,
+      "points": 7,
+      "width": 0.16249024364165962,
+      "depth": 0.16106724933721125,
+      "height": 0.029632508754730225,
+      "area": 0.026171856587495396
+    },
+    {
+      "label": "small_object_proposal",
+      "band": "tall",
+      "score": 1.428666694804072,
+      "points": 49,
+      "width": 0.25176684916019443,
+      "depth": 0.18691512554883957,
+      "height": 0.05516982078552246,
+      "area": 0.047059032219813494
+    }
+  ],
+  "wall_planes": [
+    {
+      "normal": [
+        -0.25463002920150757,
+        0.9390866160392761,
+        0.2308245301246643
+      ],
+      "d": 1.8353850841522217
+    },
+    {
+      "normal": [
+        -0.2674000859260559,
+        0.9557853937149048,
+        0.12235817313194275
+      ],
+      "d": 2.093519926071167
+    },
+    {
+      "normal": [
+        0.9620789885520935,
+        0.26456016302108765,
+        0.06642306596040726
+      ],
+      "d": -2.7756834030151367
+    }
+  ],
+  "v5_label_refinement": {
+    "changes": [
+      {
+        "id": 1,
+        "old": "table",
+        "new": "chair_or_stool",
+        "confidence": 0.34,
+        "reason": "small_sitting_height_object"
+      },
+      {
+        "id": 4,
+        "old": "cabinet_or_shelf",
+        "new": "cabinet_or_shelf",
+        "confidence": 0.38,
+        "reason": "tall_wall_or_rectangular_storage_like"
+      },
+      {
+        "id": 6,
+        "old": "chair_or_stool",
+        "new": "chair_or_stool",
+        "confidence": 0.34,
+        "reason": "small_sitting_height_object"
+      },
+      {
+        "id": 7,
+        "old": "furniture_proposal",
+        "new": "chair_or_stool",
+        "confidence": 0.34,
+        "reason": "small_sitting_height_object"
+      },
+      {
+        "id": 8,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 12,
+        "old": "small_object_proposal",
+        "new": "chair_or_stool",
+        "confidence": 0.34,
+        "reason": "small_sitting_height_object"
+      },
+      {
+        "id": 9,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 10,
+        "old": "small_object_proposal",
+        "new": "cabinet_or_shelf",
+        "confidence": 0.38,
+        "reason": "tall_wall_or_rectangular_storage_like"
+      },
+      {
+        "id": 3,
+        "old": "chair_or_stool",
+        "new": "chair_or_stool",
+        "confidence": 0.34,
+        "reason": "small_sitting_height_object"
+      },
+      {
+        "id": 2,
+        "old": "chair_or_stool",
+        "new": "floor_lamp_or_tall_thin_object",
+        "confidence": 0.5,
+        "reason": "small_footprint_tall_object"
+      },
+      {
+        "id": 5,
+        "old": "chair_or_stool",
+        "new": "chair_or_stool",
+        "confidence": 0.34,
+        "reason": "small_sitting_height_object"
+      },
+      {
+        "id": 11,
+        "old": "small_object_proposal",
+        "new": "floor_lamp_or_tall_thin_object",
+        "confidence": 0.5,
+        "reason": "small_footprint_tall_object"
+      },
+      {
+        "id": 18,
+        "old": "small_object_proposal",
+        "new": "floor_lamp_or_tall_thin_object",
+        "confidence": 0.5,
+        "reason": "small_footprint_tall_object"
+      },
+      {
+        "id": 14,
+        "old": "small_object_proposal",
+        "new": "floor_lamp_or_tall_thin_object",
+        "confidence": 0.5,
+        "reason": "small_footprint_tall_object"
+      },
+      {
+        "id": 26,
+        "old": "small_object_proposal",
+        "new": "floor_lamp_or_tall_thin_object",
+        "confidence": 0.5,
+        "reason": "small_footprint_tall_object"
+      },
+      {
+        "id": 17,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 13,
+        "old": "small_object_proposal",
+        "new": "floor_lamp_or_tall_thin_object",
+        "confidence": 0.5,
+        "reason": "small_footprint_tall_object"
+      },
+      {
+        "id": 15,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 20,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 21,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 19,
+        "old": "small_object_proposal",
+        "new": "floor_lamp_or_tall_thin_object",
+        "confidence": 0.5,
+        "reason": "small_footprint_tall_object"
+      },
+      {
+        "id": 24,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 22,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 16,
+        "old": "small_object_proposal",
+        "new": "floor_lamp_or_tall_thin_object",
+        "confidence": 0.5,
+        "reason": "small_footprint_tall_object"
+      },
+      {
+        "id": 23,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      },
+      {
+        "id": 25,
+        "old": "small_object_proposal",
+        "new": "small_object",
+        "confidence": 0.16,
+        "reason": "too_small_or_sparse_for_specific_label"
+      }
+    ]
+  },
+  "v5_position_enforcement": {
+    "policy": "nudge",
+    "input_count": 26,
+    "rejected_room_sized": 0,
+    "rejected_outside": 0,
+    "nudged": 19,
+    "preserved_outside": 0,
+    "objects": [
+      {
+        "id": 1,
+        "label": "chair_or_stool",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          2.629859209060669,
+          -0.9545817971229553
+        ],
+        "center_after": [
+          2.5405689727797673,
+          -0.9352644460195779
+        ],
+        "outside_ratio_before": 0.16608999357713167,
+        "outside_ratio_after": 0.10140336357944918
+      },
+      {
+        "id": 4,
+        "label": "cabinet_or_shelf",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -1.0502971410751343,
+          -5.438880443572998
+        ],
+        "center_after": [
+          -0.44577580629118907,
+          -2.485366270663009
+        ],
+        "outside_ratio_before": 1.0,
+        "outside_ratio_after": 0.0953781781969571
+      },
+      {
+        "id": 6,
+        "label": "chair_or_stool",
+        "action": "kept",
+        "center_before": [
+          -0.39910688996315,
+          -1.3701788187026978
+        ],
+        "center_after": [
+          -0.39910688996315,
+          -1.3701788187026978
+        ],
+        "outside_ratio_before": 0.0,
+        "outside_ratio_after": 0.0
+      },
+      {
+        "id": 7,
+        "label": "chair_or_stool",
+        "action": "kept",
+        "center_before": [
+          0.8268296718597412,
+          -0.5652974247932434
+        ],
+        "center_after": [
+          0.8268296718597412,
+          -0.5652974247932434
+        ],
+        "outside_ratio_before": 0.0,
+        "outside_ratio_after": 0.0
+      },
+      {
+        "id": 8,
+        "label": "small_object",
+        "action": "kept",
+        "center_before": [
+          -0.9132556915283203,
+          0.5842278003692627
+        ],
+        "center_after": [
+          -0.9132556915283203,
+          0.5842278003692627
+        ],
+        "outside_ratio_before": 0.0,
+        "outside_ratio_after": 0.0
+      },
+      {
+        "id": 12,
+        "label": "chair_or_stool",
+        "action": "kept",
+        "center_before": [
+          1.7795544862747192,
+          -1.2086758613586426
+        ],
+        "center_after": [
+          1.7795544862747192,
+          -1.2086758613586426
+        ],
+        "outside_ratio_before": 0.0,
+        "outside_ratio_after": 0.0
+      },
+      {
+        "id": 9,
+        "label": "small_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -1.0588351488113403,
+          -5.041759490966797
+        ],
+        "center_after": [
+          -0.49981183676835184,
+          -2.545625777799017
+        ],
+        "outside_ratio_before": 1.0,
+        "outside_ratio_after": 0.12538541669841663
+      },
+      {
+        "id": 10,
+        "label": "cabinet_or_shelf",
+        "action": "kept",
+        "center_before": [
+          1.9761404991149902,
+          1.117495059967041
+        ],
+        "center_after": [
+          1.9761404991149902,
+          1.117495059967041
+        ],
+        "outside_ratio_before": 0.18760329531486572,
+        "outside_ratio_after": 0.18760329531486572
+      },
+      {
+        "id": 3,
+        "label": "chair_or_stool",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -1.4169108867645264,
+          -4.816875457763672
+        ],
+        "center_after": [
+          -0.7010913924019039,
+          -2.5520498257898363
+        ],
+        "outside_ratio_before": 0.9999999999999999,
+        "outside_ratio_after": 0.21429109861272486
+      },
+      {
+        "id": 2,
+        "label": "floor_lamp_or_tall_thin_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -2.7633180618286133,
+          0.010276572778820992
+        ],
+        "center_after": [
+          -2.5824427265835874,
+          -0.015564063726516506
+        ],
+        "outside_ratio_before": 0.7435245335216687,
+        "outside_ratio_after": 0.22688323641267136
+      },
+      {
+        "id": 5,
+        "label": "chair_or_stool",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          3.02377986907959,
+          -0.3715818226337433
+        ],
+        "center_after": [
+          2.475647693303041,
+          -0.3735173932161927
+        ],
+        "outside_ratio_before": 1.0000000000000002,
+        "outside_ratio_after": 0.21411511675298625
+      },
+      {
+        "id": 11,
+        "label": "floor_lamp_or_tall_thin_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -1.9596937894821167,
+          1.9611797332763672
+        ],
+        "center_after": [
+          -1.8430272958031582,
+          1.8205648171128996
+        ],
+        "outside_ratio_before": 0.6226815144049702,
+        "outside_ratio_after": 0.0
+      },
+      {
+        "id": 18,
+        "label": "floor_lamp_or_tall_thin_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          0.20462319254875183,
+          2.714430809020996
+        ],
+        "center_after": [
+          0.152844551361051,
+          1.9854198498188875
+        ],
+        "outside_ratio_before": 0.9999999999999998,
+        "outside_ratio_after": 0.19362799178983334
+      },
+      {
+        "id": 14,
+        "label": "floor_lamp_or_tall_thin_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          3.1075050830841064,
+          -1.5864964723587036
+        ],
+        "center_after": [
+          2.42559844766792,
+          -1.3235490500564513
+        ],
+        "outside_ratio_before": 0.9999999999999999,
+        "outside_ratio_after": 0.022193803396585002
+      },
+      {
+        "id": 26,
+        "label": "floor_lamp_or_tall_thin_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -3.0292248725891113,
+          0.0713542103767395
+        ],
+        "center_after": [
+          -2.577533721219711,
+          0.003363310299271699
+        ],
+        "outside_ratio_before": 1.0000000000000002,
+        "outside_ratio_after": 0.0719536911337691
+      },
+      {
+        "id": 17,
+        "label": "small_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -2.6413326263427734,
+          -1.9766002893447876
+        ],
+        "center_after": [
+          -2.3289690511516965,
+          -1.7869598440968022
+        ],
+        "outside_ratio_before": 1.0,
+        "outside_ratio_after": 0.02112311411315296
+      },
+      {
+        "id": 13,
+        "label": "floor_lamp_or_tall_thin_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -2.9798712730407715,
+          -2.1264238357543945
+        ],
+        "center_after": [
+          -2.3499529881320527,
+          -1.7558284220514173
+        ],
+        "outside_ratio_before": 1.0,
+        "outside_ratio_after": 0.031331049748866815
+      },
+      {
+        "id": 15,
+        "label": "small_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -1.0690133571624756,
+          -2.7123138904571533
+        ],
+        "center_after": [
+          -0.9937267622681948,
+          -2.545833999706871
+        ],
+        "outside_ratio_before": 0.8077873939003918,
+        "outside_ratio_after": 0.0
+      },
+      {
+        "id": 20,
+        "label": "small_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -0.02233625203371048,
+          -2.4634501934051514
+        ],
+        "center_after": [
+          -0.02202851436185455,
+          -2.372094779519188
+        ],
+        "outside_ratio_before": 0.3237221230868412,
+        "outside_ratio_after": 0.039550030452517655
+      },
+      {
+        "id": 21,
+        "label": "small_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -3.252171516418457,
+          -0.8837808966636658
+        ],
+        "center_after": [
+          -2.6202189778658997,
+          -0.7858758400744057
+        ],
+        "outside_ratio_before": 1.0,
+        "outside_ratio_after": 0.13521689985578256
+      },
+      {
+        "id": 19,
+        "label": "floor_lamp_or_tall_thin_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -1.713076114654541,
+          -2.891756057739258
+        ],
+        "center_after": [
+          -1.3547360490261955,
+          -2.362094082084746
+        ],
+        "outside_ratio_before": 0.8716213190680319,
+        "outside_ratio_after": 0.03062152519346421
+      },
+      {
+        "id": 24,
+        "label": "small_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          3.0292599201202393,
+          -0.003869136795401573
+        ],
+        "center_after": [
+          2.213335663995835,
+          -0.105289166950282
+        ],
+        "outside_ratio_before": 0.9999999999999998,
+        "outside_ratio_after": 0.040491994803894954
+      },
+      {
+        "id": 22,
+        "label": "small_object",
+        "action": "kept",
+        "center_before": [
+          -1.1798259019851685,
+          2.203373670578003
+        ],
+        "center_after": [
+          -1.1798259019851685,
+          2.203373670578003
+        ],
+        "outside_ratio_before": 0.0,
+        "outside_ratio_after": 0.0
+      },
+      {
+        "id": 16,
+        "label": "floor_lamp_or_tall_thin_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -0.6983329653739929,
+          -2.7134385108947754
+        ],
+        "center_after": [
+          -0.672646025147559,
+          -2.6257681769695873
+        ],
+        "outside_ratio_before": 0.27277110940435034,
+        "outside_ratio_after": 0.0825118217906183
+      },
+      {
+        "id": 23,
+        "label": "small_object",
+        "action": "nudged_toward_room_centroid",
+        "center_before": [
+          -2.49945068359375,
+          0.20368623733520508
+        ],
+        "center_after": [
+          -2.4105352340510438,
+          0.18271127174837185
+        ],
+        "outside_ratio_before": 0.39443464066656375,
+        "outside_ratio_after": 0.09939533906534923
+      },
+      {
+        "id": 25,
+        "label": "small_object",
+        "action": "kept",
+        "center_before": [
+          -1.2921007871627808,
+          2.1306986808776855
+        ],
+        "center_after": [
+          -1.2921007871627808,
+          2.1306986808776855
+        ],
+        "outside_ratio_before": 0.0,
+        "outside_ratio_after": 0.0
+      }
+    ],
+    "output_count": 26
+  },
+  "v5_architecture_detection": {
+    "enabled": true,
+    "raw_proxy_count": 0,
+    "output_proxy_count": 1,
+    "edges": []
+  },
+  "v5_object_labels": [
+    "floor_lamp_or_tall_thin_object",
+    "chair_or_stool",
+    "small_object",
+    "small_object",
+    "cabinet_or_shelf",
+    "small_object",
+    "floor_lamp_or_tall_thin_object",
+    "small_object",
+    "floor_lamp_or_tall_thin_object",
+    "chair_or_stool",
+    "floor_lamp_or_tall_thin_object",
+    "chair_or_stool",
+    "chair_or_stool",
+    "small_object",
+    "chair_or_stool",
+    "chair_or_stool",
+    "small_object",
+    "floor_lamp_or_tall_thin_object",
+    "floor_lamp_or_tall_thin_object",
+    "small_object",
+    "small_object",
+    "cabinet_or_shelf",
+    "floor_lamp_or_tall_thin_object",
+    "floor_lamp_or_tall_thin_object",
+    "small_object",
+    "small_object",
+    "door_candidate"
+  ]
+}

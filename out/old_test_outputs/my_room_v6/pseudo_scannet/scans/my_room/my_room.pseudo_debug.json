@@ -1,0 +1,36 @@
+{
+  "source_input_ply": "data/user_scans/room_a.ply",
+  "note": "Generated from raw user geometry. Labels are pseudo labels, not ScanNet human annotations.",
+  "wall_planes": [
+    {
+      "normal": [
+        -0.02927476540207863,
+        0.9995713829994202,
+        -0.00017821551591623574
+      ],
+      "d": -2.273136615753174
+    },
+    {
+      "normal": [
+        -0.9951440691947937,
+        -0.02186972089111805,
+        0.0959690734744072
+      ],
+      "d": 2.5495986938476562
+    },
+    {
+      "normal": [
+        -0.03672999143600464,
+        -0.99801105260849,
+        0.051234327256679535
+      ],
+      "d": -2.4000625610351562
+    }
+  ],
+  "segment_meanings": {
+    "0": "floor_or_unlabeled",
+    "1": "wall",
+    "2": "ceiling",
+    "10+": "object proposal segments"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "coordinate_frame": "input",
+  "instances": [
+    {
+      "id": 1,
+      "label": "bed",
+      "score": 0.91,
+      "point_indices": [0, 4, 9]
+    },
+    {
+      "id": 2,
+      "label": "sofa",
+      "score": 0.82,
+      "point_indices": [12, 13, 14]
+    },
+    {
+      "id": 3,
+      "label": "desk",
+      "score": 0.78,
+      "bbox": {
+        "cx": 1.2,
+        "cy": 3.4,
+        "width": 1.4,
+        "depth": 0.7,
+        "theta": 1.57,
+        "z_min": 0.0,
+        "z_max": 0.9
+      }
+    }
+  ],
+  "semantic_regions": [
+    {
+      "label": "floor",
+      "point_indices": [1, 2, 3]
+    },
+    {
+      "label": "wall",
+      "point_indices": [8, 9, 10]
+    }
+  ]
+}
