@@ -1,0 +1,3 @@
+# Minimal dependencies for the wrapper/parser/viewer helper.
+# SpatialLM itself has its own environment and should be installed from the official repo.
+numpy>=1.24

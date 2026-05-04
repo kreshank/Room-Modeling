@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spatiallm-room-editor"
+version = "0.1.0"
+description = "Wrapper and browser editor for SpatialLM .ply room layouts"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[tool.setuptools.packages.find]
+include = ["spatiallm_room_editor*"]
+
+[tool.setuptools.package-data]
+"*" = ["viewer/*.html"]
