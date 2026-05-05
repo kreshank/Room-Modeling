@@ -1,6 +1,3 @@
 __pycache__/
 *.pyc
 .venv/
-outputs/*
-!outputs/sample_parse_only/
-!outputs/sample_parse_only/**
