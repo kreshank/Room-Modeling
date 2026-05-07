@@ -36,11 +36,6 @@ DENSE_FEATURE_NAMES: tuple[str, ...] = (
 )
 
 
-# ---------------------------------------------------------------------------
-# Node creation
-# ---------------------------------------------------------------------------
-
-
 def _node_type_for_kind(kind: str) -> str:
     if kind in ("furniture", "object"):
         return "object"
@@ -77,11 +72,6 @@ def _add_room_node(graph: nx.MultiDiGraph, geom: RoomGeometry) -> None:
             "n_walls": sum(1 for e in geom.entities.values() if e.kind == "wall"),
         },
     )
-
-
-# ---------------------------------------------------------------------------
-# Pairwise features
-# ---------------------------------------------------------------------------
 
 
 def _facing_score(source: EntityGeom, target: EntityGeom) -> float:
@@ -144,7 +134,7 @@ def _pair_features(
         "footprint_overlap_m2": float(overlap),
         "facing_score": float(facing),
         "path_blocking_score": float(path_block),
-        "same_cluster_score": 0.0,  # filled in by functional stage
+        "same_cluster_score": 0.0,
         "line_of_sight": los,
     }
 
@@ -170,11 +160,6 @@ def build_dense_relation_matrix(
             for fi, name in enumerate(DENSE_FEATURE_NAMES):
                 mat[i, j, fi] = feats[name]
     return id_order, mat
-
-
-# ---------------------------------------------------------------------------
-# Edge emission
-# ---------------------------------------------------------------------------
 
 
 def _emit_inside_room_edges(graph: nx.MultiDiGraph, room_geom: RoomGeometry) -> None:
@@ -204,6 +189,10 @@ def _emit_object_to_object_edges(
             dst = objects[j]
             feats = _pair_features(src, dst, room_geom)
             d = feats["distance_m"]
+            facing_error = angle_between_deg(
+                src.forward_axis_world(),
+                (dst.cx - src.cx, dst.cy - src.cy),
+            )
 
             if d <= cfg.near_distance_m:
                 graph.add_edge(
@@ -214,11 +203,7 @@ def _emit_object_to_object_edges(
                 )
             if (
                 feats["facing_score"] > 0
-                and angle_between_deg(
-                    src.forward_axis_world(),
-                    (dst.cx - src.cx, dst.cy - src.cy),
-                )
-                <= cfg.facing_angle_tol_deg
+                and facing_error <= cfg.facing_angle_tol_deg
                 and d <= cfg.far_distance_m * 1.5
             ):
                 graph.add_edge(
@@ -226,10 +211,7 @@ def _emit_object_to_object_edges(
                     dst.id,
                     type="faces",
                     distance_m=d,
-                    angle_error_deg=angle_between_deg(
-                        src.forward_axis_world(),
-                        (dst.cx - src.cx, dst.cy - src.cy),
-                    ),
+                    angle_error_deg=facing_error,
                 )
             if feats["footprint_overlap_m2"] > cfg.overlap_eps_m2:
                 graph.add_edge(
@@ -249,8 +231,6 @@ def _emit_object_to_object_edges(
                     angle_diff_deg=feats["relative_angle_deg"],
                 )
 
-            # Direction edges only when reasonably close so the graph stays
-            # focused on local relationships.
             if d <= cfg.far_distance_m:
                 direction = relative_direction(src, dst)
                 etype = {
@@ -277,7 +257,6 @@ def _emit_object_to_wall_edges(
         return
     for entity in room_geom.furniture():
         if entity.is_soft() and entity.label.lower() not in ("painting", "mirror", "curtain"):
-            # Carpets etc. shouldn't form wall-relations.
             continue
         for wall in walls:
             clearance = footprint_clearance_to_wall(entity, wall)
@@ -311,8 +290,6 @@ def _emit_object_to_wall_edges(
                     yaw_diff_deg=yaw_diff,
                 )
 
-            # has_backing: back edge of object hugs this wall and most of the
-            # back edge nearest-points fall on the wall.
             back_clear = back_edge_distance_to_wall(entity, wall)
             if back_clear <= cfg.has_backing_max_clearance_m:
                 coverage = back_edge_overlap_fraction(entity, wall)
@@ -336,11 +313,6 @@ def _emit_door_window_edges(graph: nx.MultiDiGraph, room_geom: RoomGeometry) -> 
         if wall_id and wall_id in room_geom.entities:
             etype = "door_in_wall" if ent.kind == "door" else "window_in_wall"
             graph.add_edge(ent.id, wall_id, type=etype)
-
-
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
 
 
 def build_scene_graph(

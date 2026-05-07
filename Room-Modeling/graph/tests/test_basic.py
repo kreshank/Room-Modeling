@@ -3,17 +3,22 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
 
 import numpy as np
 import pytest
 
-from room_graph.cli import build_from_scene_json
-from room_graph.config import GraphConfig
-from room_graph.fengshui import evaluate_principles
-from room_graph.functional import apply_functional_layer
-from room_graph.geometry import build_room_geometry
-from room_graph.io import load_scene_json
-from room_graph.scene_graph import (
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from graph.cli import build_from_scene_json
+from graph.config import GraphConfig
+from graph.fengshui import evaluate_principles
+from graph.functional import apply_functional_layer
+from graph.geometry import build_room_geometry
+from graph.io import load_scene_json
+from graph.scene_graph import (
     DENSE_FEATURE_NAMES,
     ROOM_NODE_ID,
     build_dense_relation_matrix,

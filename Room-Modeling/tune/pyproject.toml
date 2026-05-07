@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "room-tune"
+version = "0.1.0"
+description = "Transcript ingestion and weak-supervision extraction pipeline"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+room-tune = "tune.cli:main"
+
+[tool.setuptools]
+packages = ["tune"]
+
+[tool.setuptools.package-dir]
+tune = "."

@@ -26,11 +26,6 @@ from .scene_graph import ROOM_NODE_ID
 from .graph_types import Zone
 
 
-# ---------------------------------------------------------------------------
-# Cluster discovery
-# ---------------------------------------------------------------------------
-
-
 def _connected_components_within_radius(
     items: list[EntityGeom], radius_m: float
 ) -> list[list[EntityGeom]]:
@@ -163,7 +158,6 @@ def _build_desk_zones(room_geom: RoomGeometry, cfg: GraphConfig) -> list[Zone]:
         near_comps = [c for c in computers if desk_pad.intersects(c.footprint())]
         near_lamps = [la for la in lamps if desk_pad.intersects(la.footprint())]
         if not (near_chairs or near_comps):
-            # A bare desk without a chair or computer is not really a "desk_group".
             continue
         members.extend(c.id for c in near_chairs)
         members.extend(c.id for c in near_comps)
@@ -184,11 +178,6 @@ def _build_desk_zones(room_geom: RoomGeometry, cfg: GraphConfig) -> list[Zone]:
         )
         counter += 1
     return zones
-
-
-# ---------------------------------------------------------------------------
-# Functional edges
-# ---------------------------------------------------------------------------
 
 
 def _attach_zone_nodes(graph: nx.MultiDiGraph, zones: list[Zone]) -> None:
@@ -222,15 +211,9 @@ def _emit_table_for_edges(
             d = math.hypot(table.cx - cx, table.cy - cy)
             if d <= cfg.seating_cluster_radius_m + cfg.table_for_max_dist_m:
                 graph.add_edge(table.id, zone.id, type="serves", distance_m=d)
-                # Also connect to the primary seat for "table_for" specifically.
                 primary = zone.attrs.get("primary_seat_id")
                 if primary:
                     graph.add_edge(table.id, primary, type="table_for", distance_m=d)
-
-
-# ---------------------------------------------------------------------------
-# Walkable grid + A* for traffic paths
-# ---------------------------------------------------------------------------
 
 
 def _world_to_cell(
@@ -340,7 +323,6 @@ def _path_corridor_widths(
     max_radius_cells = int(math.ceil(1.5 / cell_m))
     widths: list[float] = []
     for r0, c0 in path:
-        # BFS outward to find nearest non-walkable cell.
         from collections import deque
 
         seen = {(r0, c0)}
@@ -384,7 +366,6 @@ def _emit_traffic_edges(
     if grid.size == 0 or not grid.any():
         return
 
-    # Snap door and zone centroids to nearest walkable cell.
     targets: list[tuple[str, tuple[float, float]]] = []
     for zone in zones:
         if zone.centroid_xy is None:
@@ -436,7 +417,6 @@ def _emit_traffic_edges(
                 cells=len(path),
             )
 
-            # Detect blocking furniture: cells where corridor is too tight.
             widths = _path_corridor_widths(grid, path, cfg.walkable_grid_cell_m)
             tight_world_points = [
                 world_path[i]
@@ -463,7 +443,6 @@ def _mark_blockers(
     seen: set[str] = set()
     for px, py in tight_points:
         pt = Point(px, py)
-        # Find any furniture within (corridor_min_width / 2) of this tight point.
         for ent in candidates:
             d = ent.footprint().distance(pt)
             if d <= cfg.corridor_min_width_m / 2.0 + cfg.walkable_grid_cell_m:
@@ -500,11 +479,6 @@ def _emit_entry_path_edges(
             graph.add_edge(door_id, target_id, type="entry_path")
 
 
-# ---------------------------------------------------------------------------
-# Focal point
-# ---------------------------------------------------------------------------
-
-
 def _pick_focal_point(
     room_geom: RoomGeometry, zones: list[Zone]
 ) -> str | None:
@@ -535,11 +509,6 @@ def _emit_focal_edge(
     if focal_id is None:
         return
     graph.add_edge(focal_id, ROOM_NODE_ID, type="focal_point_of")
-
-
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
 
 
 def apply_functional_layer(

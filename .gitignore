@@ -6,6 +6,11 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 
-# Project-generated data and model caches
-Room-Modeling/data/.hf_cache/
+# Keep data folder structure, ignore data payloads.
+Room-Modeling/data/**/*
+!Room-Modeling/data/**/
+!Room-Modeling/data/**/.gitkeep
+Room-Modeling/data/.hf_cache/**
+
+# Project-generated outputs
 Room-Modeling/outs/

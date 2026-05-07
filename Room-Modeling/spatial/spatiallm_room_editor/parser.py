@@ -37,7 +37,7 @@ def _split_params(params: str) -> list[str]:
 def _f(value: str, default: float = 0.0) -> float:
     try:
         return float(value)
-    except Exception:
+    except (TypeError, ValueError):
         return default
 
 
@@ -166,7 +166,7 @@ def parse_layout_text(layout_text: str) -> tuple[list[EditableEntity], list[dict
                 })
             else:
                 skipped.append({"line_number": line_number, "line": line, "reason": f"unsupported constructor/arity: {ctor}"})
-        except Exception as exc:  # defensive parser: never let one bad line kill the whole scene
+        except (TypeError, ValueError, KeyError, IndexError) as exc:
             skipped.append({"line_number": line_number, "line": line, "reason": repr(exc)})
 
     entities: list[EditableEntity] = []
@@ -245,7 +245,6 @@ def scene_bounds(entities: Iterable[EditableEntity], padding: float = 0.5) -> di
     xs: list[float] = []
     ys: list[float] = []
     for e in entities:
-        # Conservative top-down AABB of a rotated rectangle.
         c, s = abs(math.cos(e.yaw_rad)), abs(math.sin(e.yaw_rad))
         half_x = 0.5 * (e.width * c + e.depth * s)
         half_y = 0.5 * (e.width * s + e.depth * c)

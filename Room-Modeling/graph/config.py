@@ -123,5 +123,3 @@ def forward_axis_for_label(label: str) -> tuple[float, float]:
 
     return _DEFAULT_FORWARD_AXIS.get(label.lower(), (0.0, 1.0))
 
-
-SOFT_BLOCKER_HEIGHT_RATIO: float = 0.5

@@ -31,11 +31,6 @@ from .geometry import (
 from .graph_types import PrincipleCheck, Zone
 
 
-# ---------------------------------------------------------------------------
-# Graph query helpers
-# ---------------------------------------------------------------------------
-
-
 def _outgoing_edges_of_type(
     graph: nx.MultiDiGraph, source: str, edge_type: str
 ) -> list[tuple[str, str, dict]]:
@@ -66,9 +61,19 @@ def _faces_door(
     return visible, err
 
 
-# ---------------------------------------------------------------------------
-# Principles
-# ---------------------------------------------------------------------------
+def _door_axis_line(door: EntityGeom, room_geom: RoomGeometry) -> LineString | None:
+    wall_id = str(door.raw.get("wall_id", ""))
+    wall = room_geom.walls.get(wall_id)
+    if wall is None:
+        return None
+    tx, ty = wall.tangent()
+    nx_, ny_ = ty, -tx
+    return LineString(
+        [
+            (door.cx + nx_ * 30.0, door.cy + ny_ * 30.0),
+            (door.cx - nx_ * 30.0, door.cy - ny_ * 30.0),
+        ]
+    )
 
 
 def _principle_command_position(
@@ -116,7 +121,6 @@ def _principle_command_position(
         violations = 0
         warnings = 0
 
-        # Use the closest entry door for the primary check.
         door = min(
             (room_geom.entities[d] for d in room_geom.entry_door_ids if d in room_geom.entities),
             key=lambda d: math.hypot(d.cx - entity.cx, d.cy - entity.cy),
@@ -144,19 +148,8 @@ def _principle_command_position(
         else:
             evidence.append(f"distance to entry door {d_door:.2f}m is comfortable")
 
-        # Aligned with door = bad: door faces directly into the entity.
-        wall_id = str(door.raw.get("wall_id", ""))
-        wall = room_geom.walls.get(wall_id)
-        if wall is not None:
-            tx, ty = wall.tangent()
-            nx_, ny_ = ty, -tx
-            # Long line through door perpendicular to wall.
-            ray = LineString(
-                [
-                    (door.cx + nx_ * 30.0, door.cy + ny_ * 30.0),
-                    (door.cx - nx_ * 30.0, door.cy - ny_ * 30.0),
-                ]
-            )
+        ray = _door_axis_line(door, room_geom)
+        if ray is not None:
             if ray.intersects(entity.footprint()):
                 evidence.append(
                     f"directly aligned with door {door.id} (door axis crosses footprint)"
@@ -246,7 +239,6 @@ def _principle_solid_backing(
             )
             continue
 
-        # Check whether back edge crosses any door/window.
         back_edge = entity.back_edge()
         cut_by: list[str] = []
         for fix in fixtures:
@@ -299,17 +291,9 @@ def _principle_bed_aligned_with_door(
     for bed in beds:
         violators: list[str] = []
         for door in doors:
-            wall = room_geom.walls.get(str(door.raw.get("wall_id", "")))
-            if wall is None:
+            ray = _door_axis_line(door, room_geom)
+            if ray is None:
                 continue
-            tx, ty = wall.tangent()
-            nx_, ny_ = ty, -tx
-            ray = LineString(
-                [
-                    (door.cx + nx_ * 30.0, door.cy + ny_ * 30.0),
-                    (door.cx - nx_ * 30.0, door.cy - ny_ * 30.0),
-                ]
-            )
             if ray.intersects(bed.footprint()):
                 violators.append(door.id)
         if violators:
@@ -574,9 +558,6 @@ def _principle_door_alignment(
             wb = room_geom.walls.get(str(b.raw.get("wall_id", "")))
             if wa is None or wb is None:
                 continue
-            # If the two doors are on roughly parallel walls and the segment
-            # connecting them is roughly perpendicular to both walls, they are
-            # "aligned" and qi flows straight through.
             yaw_diff = yaw_diff_modpi_deg(wa.yaw_rad(), wb.yaw_rad())
             if yaw_diff > cfg.door_alignment_deg:
                 continue
@@ -666,11 +647,6 @@ def _principle_light_window_proximity(
             )
         )
     return checks
-
-
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
 
 
 _RULES = (

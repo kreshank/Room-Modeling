@@ -24,11 +24,6 @@ from .config import (
 )
 
 
-# ---------------------------------------------------------------------------
-# Per-entity geometry
-# ---------------------------------------------------------------------------
-
-
 @dataclass
 class WallSegment:
     """An axis-of-line representation of a wall (zero-thickness segment)."""
@@ -123,13 +118,7 @@ class EntityGeom:
     def back_edge(self) -> LineString:
         """Top-down line segment along the entity's back face (opposite forward)."""
         corners = self.corners()
-        # Back edge in local frame: from (-hw, -hd) to (hw, -hd) when forward=+y.
-        # Our `corners()` returns BL, BR, TR, TL in that local frame, so back is BL->BR.
-        # If a label uses a different forward axis, we still treat "back" as opposite
-        # of forward in world space.
         fx, fy = self.forward_axis_world()
-        # Compute back-edge by selecting the rectangle edge whose midpoint is farthest
-        # along -forward direction.
         edges = [
             (corners[0], corners[1]),
             (corners[1], corners[2]),
@@ -166,11 +155,6 @@ class EntityGeom:
         }
 
 
-# ---------------------------------------------------------------------------
-# Top-level RoomGeometry container
-# ---------------------------------------------------------------------------
-
-
 @dataclass
 class RoomGeometry:
     config: GraphConfig
@@ -199,21 +183,14 @@ class RoomGeometry:
         seg = LineString([a, b])
         if self.occluders.is_empty:
             return True
-        # Allow tiny epsilon overlap with endpoints.
         inter = seg.intersection(self.occluders)
         if inter.is_empty:
             return True
-        # If the only intersection points are the endpoints themselves, count as visible.
         if inter.geom_type == "Point":
             d_a = inter.distance(Point(a))
             d_b = inter.distance(Point(b))
             return min(d_a, d_b) < 1e-3
         return False
-
-
-# ---------------------------------------------------------------------------
-# Builder helpers
-# ---------------------------------------------------------------------------
 
 
 def _snap(v: float, step: float) -> float:
@@ -294,7 +271,6 @@ def reconstruct_room_polygon(
     if polys:
         return max(polys, key=lambda p: p.area)
 
-    # Fallback: convex hull of endpoints if it has positive area.
     if len(points) >= 3:
         hull = Polygon(points).convex_hull
         if isinstance(hull, Polygon) and hull.area > 0:
@@ -458,11 +434,6 @@ def _fallback_polygon_from_entities(entities: Iterable[EntityGeom]) -> Polygon:
             (min(xs), max(ys)),
         ]
     )
-
-
-# ---------------------------------------------------------------------------
-# Public utility helpers used across stages
-# ---------------------------------------------------------------------------
 
 
 def angle_between_deg(u: tuple[float, float], v: tuple[float, float]) -> float:

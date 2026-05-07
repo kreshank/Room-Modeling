@@ -155,7 +155,6 @@ def build_outputs(
     write_entities_csv(scene, out_dir / "entities.csv")
     if make_viewer:
         copy_viewer(out_dir / "viewer")
-        # Convenience copy: opening viewer/index.html can default-load ../scene.json.
         print(f"Viewer written to: {out_dir / 'viewer' / 'index.html'}")
     return scene
 
@@ -219,13 +218,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             from room_graph.cli import build_from_scene_json
             from room_graph.io import write_edges_csv, write_scene_graph_json
         except ImportError as exc:
-            print(
-                "--build_graph requested but room_graph is not installed. "
-                "Install it from the graph package: pip install -e ../graph",
-                file=sys.stderr,
-            )
-            print(f"Import error: {exc}", file=sys.stderr)
-            return 0
+            try:
+                from graph.cli import build_from_scene_json
+                from graph.io import write_edges_csv, write_scene_graph_json
+            except ImportError:
+                print(
+                    "--build_graph requested but graph package imports failed. "
+                    "Use one of these:\n"
+                    "  1) pip install -e ../graph\n"
+                    "  2) run with PYTHONPATH including Room-Modeling/",
+                    file=sys.stderr,
+                )
+                print(f"Import error: {exc}", file=sys.stderr)
+                return 0
 
         scene_graph = build_from_scene_json(out_dir / "scene.json")
         graph_path = out_dir / "scene_graph.json"
