@@ -1,6 +1,0 @@
-Metadata-Version: 2.4
-Name: spatiallm-room-editor
-Version: 0.1.0
-Summary: Wrapper and browser editor for SpatialLM .ply room layouts
-Requires-Python: >=3.10
-Requires-Dist: numpy>=1.24

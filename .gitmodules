@@ -1,0 +1,3 @@
+[submodule "SpatialLM"]
+	path = SpatialLM
+	url = https://github.com/manycore-research/SpatialLM.git
