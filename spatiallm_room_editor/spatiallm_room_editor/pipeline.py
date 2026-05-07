@@ -172,6 +172,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--python", default=sys.executable, help="Python executable inside your SpatialLM environment")
     parser.add_argument("--no_cleanup", action="store_true", help="Pass --no_cleanup to SpatialLM")
     parser.add_argument("--no_viewer", action="store_true", help="Do not copy the HTML editor into the output folder")
+    parser.add_argument("--build_graph", action="store_true", help="Also build a deterministic scene_graph.json via the room_graph package")
     parser.add_argument("--extra_spatiallm_args", nargs=argparse.REMAINDER, help="Advanced args passed after -- to SpatialLM inference.py")
     args = parser.parse_args(argv)
 
@@ -208,6 +209,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"Wrote: {out_dir / 'scene.json'}")
     print(f"Wrote: {out_dir / 'entities.csv'}")
     print(f"Parsed {len(scene.get('entities', []))} entities; skipped {len(scene.get('skipped_lines', []))} lines.")
+
+    if args.build_graph:
+        try:
+            from room_graph.cli import build_from_scene_json
+            from room_graph.io import write_edges_csv, write_scene_graph_json
+        except ImportError as exc:
+            print(
+                "--build_graph requested but room_graph is not installed. "
+                "Install it from the sibling package: pip install -e ../room_graph",
+                file=sys.stderr,
+            )
+            print(f"Import error: {exc}", file=sys.stderr)
+            return 0
+
+        scene_graph = build_from_scene_json(out_dir / "scene.json")
+        graph_path = out_dir / "scene_graph.json"
+        write_scene_graph_json(scene_graph, graph_path)
+        write_edges_csv(scene_graph, out_dir / "edges.csv")
+        print(f"Wrote: {graph_path}")
+        print(f"Wrote: {out_dir / 'edges.csv'}")
     return 0
 
 

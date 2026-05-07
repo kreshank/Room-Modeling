@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "room-graph"
+version = "0.1.0"
+description = "Deterministic 3D scene graph builder for SpatialLM room outputs (geometric + functional + feng shui layers)"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "networkx>=3.2",
+    "shapely>=2.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+room-graph = "room_graph.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["room_graph*"]
