@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fengshui-network"
+version = "0.1.0"
+description = "Heterogeneous GAT for feng shui principle prediction over SpatialLM-derived scene graphs."
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.3",
+    "torch_geometric>=2.5",
+    "numpy>=1.24",
+    "networkx>=3.2",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+fengshui-network = "network.cli:main"
+
+[tool.setuptools]
+packages = ["network"]
+
+[tool.setuptools.package-dir]
+network = "."
