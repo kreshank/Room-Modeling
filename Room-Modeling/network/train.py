@@ -30,15 +30,14 @@ from torch.optim import AdamW
 from tqdm.auto import tqdm
 
 from .dataset import FengShuiSceneGraphDataset, resolve_paths
-from .labels import HEAD_NODE_TYPES, PRINCIPLES, STATUSES
+from .labels import HEAD_NODE_TYPES, PRINCIPLES, STATUSES, STATUS_SCORE_AXIS
 from .metrics import MaskedMAE, StatusF1Accumulator, metrics_to_dict
 from .model import HeteroGAT, HeteroGATConfig
 from .targets import IGNORE_INDEX
 
 DEFAULT_RUNS_DIR = Path("outs/network_runs")
 
-
-SCORE_AXIS = torch.tensor([0.0, 0.5, 1.0])  # violated, weak, good
+SCORE_AXIS = torch.tensor(STATUS_SCORE_AXIS, dtype=torch.float32)
 
 
 def default_device() -> str:

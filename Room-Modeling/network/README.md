@@ -48,8 +48,8 @@ CUDA: the default `pip install -r requirements.txt` works.
 Run from the repo root with `PYTHONPATH=.`. Three subcommands share one
 entry point: `python -m network.cli {predict,train,eval}`.
 
-All commands write JSON to `outs/network_runs/...` and print a clean
-human-readable summary; tqdm bars track epoch / example / graph progress.
+Default JSON output: `predict` → `outs/inference/...`; `train` / `eval` →
+`outs/network_runs/...`. Summaries print to stdout; training shows tqdm bars.
 `--device` defaults to `cuda` when available and falls back to `cpu`.
 
 ### `python -m network.cli predict`
@@ -60,7 +60,7 @@ Run a forward pass on one scene graph.
 |------|---------|-------------|
 | `--scene_graph PATH` | required | `scene_graph.json` produced by `graph/`. |
 | `--weights PATH` | none (random init) | `.pt` checkpoint to load. |
-| `--out PATH` | `outs/network_runs/predict_<scene>_<timestamp>.json` | Where to write the predictions JSON. |
+| `--out PATH` | `outs/inference/predict_<scene>_<timestamp>.json` | Where to write the predictions JSON. |
 | `--seed INT` | `0` | Torch seed. |
 
 Example:

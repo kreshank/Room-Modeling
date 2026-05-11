@@ -24,6 +24,7 @@ PRINCIPLES: tuple[str, ...] = (
 STATUSES: tuple[str, ...] = ("violated", "weak", "good")
 STATUS_TO_INDEX: dict[str, int] = {s: i for i, s in enumerate(STATUSES)}
 INDEX_TO_STATUS: dict[int, str] = {i: s for i, s in enumerate(STATUSES)}
+STATUS_SCORE_AXIS: tuple[float, ...] = (0.0, 0.5, 1.0)
 
 
 # Canonical label vocabulary. Drawn from `graph/config.py` plus the structural
@@ -166,6 +167,7 @@ def label_to_index(label: str | None) -> int:
 __all__ = [
     "PRINCIPLES",
     "STATUSES",
+    "STATUS_SCORE_AXIS",
     "STATUS_TO_INDEX",
     "INDEX_TO_STATUS",
     "LABEL_VOCAB",

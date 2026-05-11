@@ -1,14 +1,4 @@
-"""Command-line interface for the feng shui GNN.
-
-Subcommands:
-
-* ``predict`` — forward pass on a single ``scene_graph.json`` (random init or
-  loaded weights), emitting the rule-engine-shaped principle JSON.
-* ``train`` — distillation training against ``principle_checks`` taken from
-  one or more ``scene_graph.json`` files. See :mod:`network.train`.
-* ``eval``  — agreement metrics (per-principle macro-F1, score MAE) of a
-  trained checkpoint against the rule engine on a held-out set.
-"""
+"""CLI for the feng shui GNN: ``predict``, ``train``, ``eval``."""
 
 from __future__ import annotations
 
@@ -29,12 +19,13 @@ from .labels import (
     INDEX_TO_STATUS,
     NODE_TYPE_PRINCIPLE_MASK,
     PRINCIPLES,
+    STATUS_SCORE_AXIS,
 )
 from .model import HeteroGAT, HeteroGATConfig
-from .train import DEFAULT_RUNS_DIR, add_train_arguments, run_train
+from .train import add_train_arguments, run_train
 
-
-SCORE_AXIS = torch.tensor([0.0, 0.5, 1.0])  # violated, weak, good
+DEFAULT_INFERENCE_DIR = Path("outs/inference")
+SCORE_AXIS = torch.tensor(STATUS_SCORE_AXIS, dtype=torch.float32)
 
 
 def _build_predictions(
@@ -42,7 +33,6 @@ def _build_predictions(
     id_order: dict[str, list[str]],
 ) -> list[dict[str, Any]]:
     predictions: list[dict[str, Any]] = []
-    score_axis = SCORE_AXIS
     for ntype in HEAD_NODE_TYPES:
         logits = out["node_principle_logits"].get(ntype)
         if logits is None:
@@ -58,7 +48,7 @@ def _build_predictions(
                 p_logits = logits[n_idx, p_idx]
                 probs = torch.softmax(p_logits, dim=-1)
                 status_idx = int(probs.argmax().item())
-                est_score = float((probs * score_axis).sum().item())
+                est_score = float((probs * SCORE_AXIS).sum().item())
                 predictions.append(
                     {
                         "principle": principle,
@@ -108,7 +98,7 @@ def predict(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="network",
-        description="Forward-pass the feng shui GNN on a scene_graph.json.",
+        description="Feng shui GNN: predict, train, or eval on scene graphs.",
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
@@ -129,7 +119,7 @@ def main(argv: list[str] | None = None) -> int:
         "--out",
         default=None,
         help="Path to write the prediction JSON. Defaults to "
-             f"{DEFAULT_RUNS_DIR}/predict_<scene>_<timestamp>.json.",
+             f"{DEFAULT_INFERENCE_DIR}/predict_<scene>_<timestamp>.json.",
     )
     p_predict.add_argument("--seed", type=int, default=0)
 
@@ -149,9 +139,6 @@ def main(argv: list[str] | None = None) -> int:
         return run_train(args)
     if args.cmd == "eval":
         return run_eval(args)
-    if args.cmd != "predict":
-        parser.error(f"unknown command: {args.cmd}")
-        return 2
 
     scene_path = Path(args.scene_graph).expanduser()
     if not scene_path.exists():
@@ -182,15 +169,15 @@ def _resolve_predict_out_path(provided: str | None, scene_path: Path) -> Path:
         return Path(provided).expanduser()
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     safe_stem = re.sub(r"[^A-Za-z0-9_-]+", "_", scene_path.parent.name or "scene")
-    return DEFAULT_RUNS_DIR / f"predict_{safe_stem}_{timestamp}.json"
+    return DEFAULT_INFERENCE_DIR / f"predict_{safe_stem}_{timestamp}.json"
 
 
 def _print_predict_summary(result: dict[str, Any]) -> None:
     preds = result.get("principle_predictions", []) or []
     status_counts = Counter(p.get("status", "?") for p in preds)
     type_counts = Counter()
-    for ntype, ids in (result.get("graph_summary", {}).get("nodes_per_type") or {}).items():
-        type_counts[ntype] = ids if isinstance(ids, int) else len(ids)
+    for ntype, n in (result.get("graph_summary", {}).get("nodes_per_type") or {}).items():
+        type_counts[ntype] = int(n)
     print("Predict")
     print(f"  source:      {result.get('source_scene_graph')}")
     print(f"  weights:     {result.get('weights') or '(random init)'}")

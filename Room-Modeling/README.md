@@ -101,7 +101,7 @@ python -m network.cli predict \
   --weights     outs/network_runs/train_<timestamp>/best.pt
 ```
 
-Defaults JSON output under `outs/network_runs/predict_<scene>_<timestamp>.json`.
+Defaults JSON output under `outs/inference/predict_<scene>_<timestamp>.json`.
 
 ## Modules
 
@@ -118,7 +118,8 @@ Defaults JSON output under `outs/network_runs/predict_<scene>_<timestamp>.json`.
 outs/spatial_editor_outputs/<room>/   # scene.json, layout.txt, viewer, …
 outs/graph_cache/<room>/              # scene_graph.json, edges.csv
 outs/transcripts/                     # tune: summary.json, *.jsonl
-outs/network_runs/                    # train / eval / predict artifacts
+outs/network_runs/                    # train / eval artifacts
+outs/inference/                       # default predict JSON output
 ```
 
 ## Tests
