@@ -1,25 +1,29 @@
-"""Forward-pass CLI for the feng shui GNN.
+"""Command-line interface for the feng shui GNN.
 
-Reads a `scene_graph.json` produced by the `graph/` pipeline, runs it through
-the heterogeneous GAT (random init unless `--weights` is supplied), and emits
-predictions in a JSON shape that mirrors the rule engine's `principle_checks`.
+Subcommands:
 
-Example:
-
-    python -m network.cli predict \\
-        --scene_graph Room-Modeling/outs/spatial_editor_outputs/smoke_test/scene_graph.json
+* ``predict`` — forward pass on a single ``scene_graph.json`` (random init or
+  loaded weights), emitting the rule-engine-shaped principle JSON.
+* ``train`` — distillation training against ``principle_checks`` taken from
+  one or more ``scene_graph.json`` files. See :mod:`network.train`.
+* ``eval``  — agreement metrics (per-principle macro-F1, score MAE) of a
+  trained checkpoint against the rule engine on a held-out set.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import re
+from collections import Counter
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 import torch
 
 from .data import hetero_data_summary, load_scene_graph, to_hetero_data
+from .eval import add_eval_arguments, run_eval
 from .labels import (
     HEAD_NODE_TYPES,
     INDEX_TO_STATUS,
@@ -27,6 +31,7 @@ from .labels import (
     PRINCIPLES,
 )
 from .model import HeteroGAT, HeteroGATConfig
+from .train import DEFAULT_RUNS_DIR, add_train_arguments, run_train
 
 
 SCORE_AXIS = torch.tensor([0.0, 0.5, 1.0])  # violated, weak, good
@@ -123,12 +128,27 @@ def main(argv: list[str] | None = None) -> int:
     p_predict.add_argument(
         "--out",
         default=None,
-        help="Optional path to write the prediction JSON; otherwise stdout.",
+        help="Path to write the prediction JSON. Defaults to "
+             f"{DEFAULT_RUNS_DIR}/predict_<scene>_<timestamp>.json.",
     )
     p_predict.add_argument("--seed", type=int, default=0)
 
+    p_train = sub.add_parser(
+        "train", help="Distill the rule engine into the GNN."
+    )
+    add_train_arguments(p_train)
+
+    p_eval = sub.add_parser(
+        "eval", help="Score a checkpoint against the rule engine."
+    )
+    add_eval_arguments(p_eval)
+
     args = parser.parse_args(argv)
 
+    if args.cmd == "train":
+        return run_train(args)
+    if args.cmd == "eval":
+        return run_eval(args)
     if args.cmd != "predict":
         parser.error(f"unknown command: {args.cmd}")
         return 2
@@ -148,15 +168,44 @@ def main(argv: list[str] | None = None) -> int:
         seed=args.seed,
     )
 
-    text = json.dumps(result, indent=2)
-    if args.out:
-        out_path = Path(args.out).expanduser()
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(text, encoding="utf-8")
-        print(f"Wrote: {out_path}")
-    else:
-        print(text)
+    out_path = _resolve_predict_out_path(args.out, scene_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+
+    _print_predict_summary(result)
+    print(f"Predictions JSON: {out_path}")
     return 0
+
+
+def _resolve_predict_out_path(provided: str | None, scene_path: Path) -> Path:
+    if provided:
+        return Path(provided).expanduser()
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    safe_stem = re.sub(r"[^A-Za-z0-9_-]+", "_", scene_path.parent.name or "scene")
+    return DEFAULT_RUNS_DIR / f"predict_{safe_stem}_{timestamp}.json"
+
+
+def _print_predict_summary(result: dict[str, Any]) -> None:
+    preds = result.get("principle_predictions", []) or []
+    status_counts = Counter(p.get("status", "?") for p in preds)
+    type_counts = Counter()
+    for ntype, ids in (result.get("graph_summary", {}).get("nodes_per_type") or {}).items():
+        type_counts[ntype] = ids if isinstance(ids, int) else len(ids)
+    print("Predict")
+    print(f"  source:      {result.get('source_scene_graph')}")
+    print(f"  weights:     {result.get('weights') or '(random init)'}")
+    print(f"  model_params:{result.get('model_params'):>10,}")
+    score = result.get("graph_score")
+    if isinstance(score, (int, float)):
+        print(f"  graph_score: {float(score):.4f}")
+    if type_counts:
+        nodes_part = ", ".join(f"{k}={v}" for k, v in sorted(type_counts.items()))
+        print(f"  nodes:       {nodes_part}")
+    if preds:
+        statuses = ", ".join(f"{k}={status_counts[k]}" for k in ("good", "weak", "violated") if k in status_counts)
+        print(f"  predictions: {len(preds)} cells ({statuses})")
+    else:
+        print("  predictions: 0 cells")
 
 
 if __name__ == "__main__":

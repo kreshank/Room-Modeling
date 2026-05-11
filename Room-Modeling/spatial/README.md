@@ -1,6 +1,6 @@
-# SpatialLM Room Editor Pipeline
+# spatial/ — SpatialLM Room Editor Pipeline
 
-This is a small implementation scaffold for:
+A small implementation scaffold for:
 
 ```text
 .ply point cloud
@@ -12,6 +12,75 @@ This is a small implementation scaffold for:
 ```
 
 The project does **not** vendor SpatialLM. It calls the official SpatialLM repository as a subprocess, then parses the model's text output into an easier JSON schema for your own UI and layout heuristics.
+
+## CLI
+
+Two CLI entry points live here. Run from the `spatial/` folder, or from the
+repo root with `PYTHONPATH=spatial`.
+
+### `python -m spatiallm_room_editor` (or `python run_pipeline.py`)
+
+`.ply` → SpatialLM layout → editable `scene.json` + viewer.
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--ply PATH` | required | Path to the input `.ply` point cloud (z-up, metric scale). |
+| `--out_dir DIR` | `../outs/spatial_editor_outputs/my_room` | Destination for `layout.txt`, `scene.json`, `entities.csv`, `viewer/`. |
+| `--spatiallm_dir DIR` | — | Path to a cloned official SpatialLM repo. **Required unless `--layout_txt` is given.** |
+| `--model_path STR` | `manycore-research/SpatialLM1.1-Qwen-0.5B` | HF repo / local path of the SpatialLM checkpoint. |
+| `--detect_type {all,arch,object}` | `all` | What SpatialLM should detect. |
+| `--category WORDS...` | room/furniture defaults | Optional category whitelist for SpatialLM1.1. |
+| `--layout_txt PATH` | — | Use an existing SpatialLM `layout.txt` instead of running inference (CPU-only mode). |
+| `--python EXEC` | current `sys.executable` | Python executable inside your SpatialLM (CUDA) env. |
+| `--no_cleanup` | off | Pass `--no_cleanup` through to SpatialLM. |
+| `--no_viewer` | off | Skip copying the HTML editor into the output folder. |
+| `--build_graph` | off | Also build `scene_graph.json` via the local `graph/` package. |
+| `--extra_spatiallm_args ...` | — | Anything after `--` is forwarded to SpatialLM `inference.py`. |
+
+Examples:
+
+```bash
+# Full pipeline (needs CUDA + the official SpatialLM env)
+python run_pipeline.py \
+  --ply path/to/my_room.ply \
+  --spatiallm_dir path/to/SpatialLM \
+  --out_dir ../outs/spatial_editor_outputs/my_room \
+  --detect_type all
+
+# Re-parse an existing layout.txt without rerunning inference (CPU-friendly)
+python run_pipeline.py \
+  --ply path/to/my_room.ply \
+  --layout_txt examples/sample_layout.txt \
+  --out_dir ../outs/spatial_editor_outputs/sample_parse_only
+```
+
+### `python scripts/serve_output.py`
+
+Tiny HTTP server so the bundled `viewer/index.html` can fetch its
+`scene.json` over HTTP (file:// won't work due to browser CORS rules).
+
+| Positional | Default | Description |
+|------------|---------|-------------|
+| `out_dir` | `../outs/spatial_editor_outputs/my_room` | Directory to serve (must contain `viewer/` and `scene.json`). |
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--port INT` | `8000` | Port to bind on `127.0.0.1`. |
+
+```bash
+python scripts/serve_output.py ../outs/spatial_editor_outputs/my_room
+# Then open http://127.0.0.1:8000/viewer/index.html
+```
+
+## Module layout
+
+- `run_pipeline.py` — thin shim that delegates to `spatiallm_room_editor.pipeline`.
+- `spatiallm_room_editor/pipeline.py` — orchestrator: invokes SpatialLM as
+  a subprocess, parses `layout.txt`, writes `scene.json` + `entities.csv`,
+  optionally copies the viewer.
+- `spatiallm_room_editor/parser.py` — SpatialLM `layout.txt` → `scene.json`
+  converter.
+- `scripts/serve_output.py` — local HTTP server for the viewer.
 
 ## 1. Install the official SpatialLM repo
 
