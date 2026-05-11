@@ -17,12 +17,22 @@
     <label class="file-label">predict JSON (optional)</label>
     <input type="file" id="file-predict" accept=".json,application/json" />
 
-    <label class="file-label">extras JSON — explanations / attention (optional)</label>
+    <label class="file-label">extras JSON — LLM annotations (optional)</label>
     <input type="file" id="file-extras" accept=".json,application/json" />
 
     <hr />
 
     <div id="summary" class="summary muted">No scene graph loaded.</div>
+
+    <!-- LLM extras panels — shown when extras JSON is loaded -->
+    <div id="extras-panel" class="extras-panel" style="display:none">
+      <div id="extras-score-row" class="extras-score-row"></div>
+      <div id="extras-summary" class="extras-summary"></div>
+      <div id="extras-recs" class="extras-recs"></div>
+      <div id="extras-violations" class="extras-violations"></div>
+    </div>
+
+    <hr id="hr-controls" />
 
     <label class="check"><input type="checkbox" id="chk-principle" /> Show <code>principle_*</code> edges</label>
     <label class="check"><input type="checkbox" id="chk-merge" checked /> Merge opposite directed edges (same pair + type)</label>

@@ -1,4 +1,4 @@
-"""CLI for the feng shui GNN: ``predict``, ``train``, ``eval``."""
+"""CLI for the feng shui GNN: ``predict``, ``train``, ``eval``, ``annotate``."""
 
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ from .labels import (
     PRINCIPLES,
     STATUS_SCORE_AXIS,
 )
+from .annotate import add_annotate_arguments, run_annotate
 from .model import HeteroGAT, HeteroGATConfig
 from .train import add_train_arguments, run_train
 
@@ -98,7 +99,7 @@ def predict(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="network",
-        description="Feng shui GNN: predict, train, or eval on scene graphs.",
+        description="Feng shui GNN: predict, train, eval, or annotate on scene graphs.",
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
@@ -133,12 +134,20 @@ def main(argv: list[str] | None = None) -> int:
     )
     add_eval_arguments(p_eval)
 
+    p_annotate = sub.add_parser(
+        "annotate",
+        help="Use a local LLM (via Ollama) to explain GNN predictions and give recommendations.",
+    )
+    add_annotate_arguments(p_annotate)
+
     args = parser.parse_args(argv)
 
     if args.cmd == "train":
         return run_train(args)
     if args.cmd == "eval":
         return run_eval(args)
+    if args.cmd == "annotate":
+        return run_annotate(args)
 
     scene_path = Path(args.scene_graph).expanduser()
     if not scene_path.exists():

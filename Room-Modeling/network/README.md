@@ -145,6 +145,77 @@ PYTHONPATH=. python -m network.cli eval \
 Prints a tabular summary (macro-F1, score MAE, graph score MAE, supervised
 cell counts, per-principle F1) and writes the full metrics JSON.
 
+### `python -m network.cli annotate`
+
+Use a local LLM (via [Ollama](https://ollama.com)) to explain GNN predictions
+and emit a human-readable extras JSON for the visualizer.
+
+#### One-time setup
+
+```bash
+# Install Ollama (system-level)
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull qwen2.5:0.5b      # ~350 MB
+
+# Python client
+pip install ollama
+```
+
+#### Usage
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--predict PATH` | required | `predict_*.json` from `network.cli predict`. |
+| `--model STR` | `qwen2.5:0.5b` | Any Ollama model tag (e.g. `llama3.2:1b`). |
+| `--out PATH` | `outs/inference/extras_<stem>_<timestamp>.json` | Extras JSON output path. |
+
+```bash
+PYTHONPATH=. python -m network.cli annotate \
+  --predict outs/inference/predict_my_room_<ts>.json
+```
+
+Prints overall score label, summary, and numbered recommendations to stdout.
+Writes `extras_*.json` alongside the predict file.
+
+#### Extras JSON schema
+
+```json
+{
+  "schema_version": "fengshui_extras_v1",
+  "source_predict": "outs/inference/predict_my_room_…json",
+  "model": "qwen2.5:0.5b",
+  "graph_score": 0.77,
+  "overall_score_label": "Good",
+  "summary": "2–3 sentence plain-English room summary.",
+  "recommendations": [
+    "Move the bed away from the direct door axis.",
+    "Add a nightstand on the right side of the bed."
+  ],
+  "ranked_violations": [
+    { "principle": "bed_aligned_with_door", "target": "bbox_0",
+      "score": 0.29, "status": "violated", "impact": "high" }
+  ],
+  "explanations": [
+    { "target": "bbox_0", "principle": "command_position",
+      "status": "violated", "score": 0.42,
+      "text": "The bed does not face the entry door…" }
+  ]
+}
+```
+
+Load this file in the visualizer's **extras JSON** file picker to display
+the LLM summary, ranked violations table, and per-node explanations.
+
+#### Upgrading to a larger model or fine-tuned weights
+
+Any Ollama-compatible model works with `--model`. For better feng shui
+knowledge, consider:
+
+- **Larger base model**: `--model llama3.2:3b` (still local, ~2 GB).
+- **LoRA fine-tune**: train a LoRA adapter on a feng shui book with
+  `pip install peft trl`, then register it as an Ollama `Modelfile`.
+  The `annotate.py` prompt contract does not change.
+
 ## Module layout
 
 - `labels.py` — principle vocabulary, status enum, label embedding table,
@@ -173,7 +244,8 @@ cell counts, per-principle F1) and writes the full metrics JSON.
   `λ_graph · SmoothL1(σ(graph_logit), mean teacher score)`. Tqdm bars,
   JSONL log, human-readable summary printer.
 - `eval.py` — load checkpoint, run held-out set, emit metrics JSON.
-- `cli.py` / `__main__.py` — `predict`, `train`, `eval` subcommands.
+- `cli.py` / `__main__.py` — `predict`, `train`, `eval`, `annotate` subcommands.
+- `annotate.py` — Ollama prompt builder, response validator, extras JSON emitter.
 
 ## Tests
 

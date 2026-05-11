@@ -528,11 +528,13 @@ function bindEvents() {
     const f = ev.target.files && ev.target.files[0];
     if (!f) {
       extras = null;
+      _renderExtrasPanels(null);
       return;
     }
     try {
       extras = await readJsonFile(f);
       applyExtrasLayer(extras, null);
+      draw();
     } catch (e) {
       alert("Invalid extras JSON: " + e);
     }
@@ -574,27 +576,125 @@ function bindEvents() {
 
 /**
  * Hook for LLM explanations or edge attention JSON.
+ * Called on file load (nodeId=null) to populate sidebar panels, and on
+ * hover/click (nodeId set) to surface per-node text in the detail panel.
  * @param {object|null} data parsed extras file
  * @param {string|null} nodeId selected/hover node, or null when file loads
- * @returns {string|null} extra text lines for the detail panel
+ * @returns {string|null} extra text lines for the detail panel (hover/click)
  */
 function applyExtrasLayer(data, nodeId) {
-  if (!data || typeof data !== "object") return null;
+  if (!data || typeof data !== "object") {
+    _renderExtrasPanels(null);
+    return null;
+  }
+
+  // On initial load (nodeId === null) render the sidebar panels.
+  if (nodeId === null) {
+    _renderExtrasPanels(data);
+  }
+
+  // Per-node detail text (hover / click)
   if (Array.isArray(data.explanations)) {
-    const lines = data.explanations
-      .filter((row) => !nodeId || row.target === nodeId || row.node_id === nodeId)
+    const rows = data.explanations.filter(
+      (row) => !nodeId || row.target === nodeId || row.node_id === nodeId
+    );
+    if (!rows.length) return null;
+    return rows
       .map((row) => {
-        const t = row.target || row.node_id || "?";
         const p = row.principle || row.topic || "";
-        const txt = row.text || row.summary || JSON.stringify(row);
-        return `  [extras] ${t} ${p}: ${txt}`;
-      });
-    return lines.length ? lines.join("\n") : null;
+        const txt = row.text || row.summary || "";
+        return `[LLM] ${p}: ${txt}`;
+      })
+      .join("\n");
   }
-  if (Array.isArray(data.edge_attention)) {
-    return nodeId ? null : `  [extras] ${data.edge_attention.length} attention edges (select node to filter — not wired)`;
+
+  if (Array.isArray(data.edge_attention) && !nodeId) {
+    return `[extras] ${data.edge_attention.length} attention edges loaded`;
   }
+
   return null;
+}
+
+function _renderExtrasPanels(data) {
+  const panel = $("extras-panel");
+  if (!data) {
+    panel.style.display = "none";
+    return;
+  }
+
+  panel.style.display = "";
+
+  // Score row
+  const scoreEl = $("extras-score-row");
+  const gs = data.graph_score != null ? ` · score ${data.graph_score}` : "";
+  const lbl = data.overall_score_label ? ` — ${data.overall_score_label}` : "";
+  scoreEl.textContent = `Room${gs}${lbl}`;
+
+  // Summary
+  const summaryEl = $("extras-summary");
+  summaryEl.textContent = data.summary || "";
+
+  // Recommendations
+  const recsEl = $("extras-recs");
+  recsEl.innerHTML = "";
+  const recs = Array.isArray(data.recommendations) ? data.recommendations : [];
+  if (recs.length) {
+    const h = document.createElement("strong");
+    h.textContent = "Recommendations";
+    recsEl.appendChild(h);
+    const ul = document.createElement("ul");
+    for (const rec of recs) {
+      const li = document.createElement("li");
+      li.textContent = rec;
+      ul.appendChild(li);
+    }
+    recsEl.appendChild(ul);
+  }
+
+  // Ranked violations table — clicking a row highlights that node
+  const violEl = $("extras-violations");
+  violEl.innerHTML = "";
+  const violations = Array.isArray(data.ranked_violations) ? data.ranked_violations : [];
+  if (violations.length) {
+    const h = document.createElement("strong");
+    h.textContent = "Ranked violations";
+    violEl.appendChild(h);
+    const table = document.createElement("table");
+    const thead = table.createTHead();
+    const hr = thead.insertRow();
+    for (const col of ["Principle", "Target", "Impact", "Score"]) {
+      const th = document.createElement("th");
+      th.textContent = col;
+      hr.appendChild(th);
+    }
+    const tbody = table.createTBody();
+    for (const v of violations) {
+      const tr = tbody.insertRow();
+      const impactCls = `impact-${(v.impact || "medium").toLowerCase()}`;
+      const statusCls = `status-${(v.status || "violated").toLowerCase()}`;
+      const cells = [
+        { text: (v.principle || "").replace(/_/g, " "), cls: statusCls },
+        { text: v.target || "", cls: "" },
+        { text: v.impact || "", cls: impactCls },
+        { text: v.score != null ? Number(v.score).toFixed(2) : "", cls: "" },
+      ];
+      for (const { text, cls } of cells) {
+        const td = tr.insertCell();
+        td.textContent = text;
+        if (cls) td.className = cls;
+      }
+      // Clicking a row selects that node in the canvas
+      tr.addEventListener("click", () => {
+        const tid = v.target;
+        if (tid && sceneGraph) {
+          selectedId = tid;
+          $("detail").textContent = formatNodeDetail(tid);
+          draw();
+        }
+      });
+    }
+    violEl.appendChild(table);
+  }
 }
 
 bindEvents();

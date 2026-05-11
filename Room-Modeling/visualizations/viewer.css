@@ -141,3 +141,67 @@ code {
   padding: 1px 4px;
   border-radius: 2px;
 }
+
+/* LLM extras */
+.extras-panel {
+  margin: 8px 0;
+  padding: 8px;
+  background: #f0f4ff;
+  border: 1px solid #c5d0ee;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.extras-score-row {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.extras-summary {
+  color: #222;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.extras-recs {
+  margin-bottom: 8px;
+}
+
+.extras-recs ul {
+  margin: 4px 0 0 14px;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.extras-violations table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.extras-violations th {
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid #c5d0ee;
+  padding: 2px 3px;
+  background: #e4eaf8;
+}
+
+.extras-violations td {
+  padding: 2px 3px;
+  border-bottom: 1px solid #e0e6f4;
+  cursor: pointer;
+}
+
+.extras-violations tr:hover td {
+  background: #dde8ff;
+}
+
+.impact-high   { color: #c0392b; font-weight: 600; }
+.impact-medium { color: #d35400; }
+.impact-low    { color: #666; }
+
+.status-violated { color: #c0392b; }
+.status-weak     { color: #d35400; }
+.status-good     { color: #27ae60; }
