@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Room graph viewer</title>
+  <link rel="stylesheet" href="viewer.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h1>Room graph</h1>
+    <p class="hint">Load JSON via file picker (works from <code>file://</code>).</p>
+
+    <label class="file-label">scene_graph.json</label>
+    <input type="file" id="file-scene" accept=".json,application/json" />
+
+    <label class="file-label">predict JSON (optional)</label>
+    <input type="file" id="file-predict" accept=".json,application/json" />
+
+    <label class="file-label">extras JSON — explanations / attention (optional)</label>
+    <input type="file" id="file-extras" accept=".json,application/json" />
+
+    <hr />
+
+    <div id="summary" class="summary muted">No scene graph loaded.</div>
+
+    <label class="check"><input type="checkbox" id="chk-principle" /> Show <code>principle_*</code> edges</label>
+    <label class="check"><input type="checkbox" id="chk-merge" checked /> Merge opposite directed edges (same pair + type)</label>
+    <label class="check"><input type="checkbox" id="chk-color" checked /> Color nodes by worst predicted status</label>
+
+    <label for="sel-weight">Edge stroke from numeric field</label>
+    <select id="sel-weight"><option value="">(uniform)</option></select>
+
+    <fieldset class="edge-types">
+      <legend>Edge types</legend>
+      <div id="edge-type-boxes" class="muted">Load scene graph first.</div>
+    </fieldset>
+
+    <div id="detail" class="detail"></div>
+  </aside>
+
+  <main class="main">
+    <canvas id="cv" width="900" height="700"></canvas>
+    <p class="footer muted">Pan: not implemented. Resize window to refit.</p>
+  </main>
+
+  <script src="viewer.js"></script>
+</body>
+</html>

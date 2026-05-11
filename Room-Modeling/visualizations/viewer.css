@@ -1,0 +1,143 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  color: #1a1a1a;
+  background: #f4f4f5;
+}
+
+.sidebar {
+  width: 300px;
+  min-width: 260px;
+  padding: 12px 14px;
+  overflow-y: auto;
+  background: #fff;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar h1 {
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+}
+
+.file-label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+input[type="file"] {
+  width: 100%;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.hint {
+  font-size: 11px;
+  color: #555;
+  margin: 0 0 8px;
+}
+
+.muted {
+  color: #666;
+  font-size: 12px;
+}
+
+.summary {
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 12px 0;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+  cursor: pointer;
+}
+
+#sel-weight {
+  width: 100%;
+  margin: 4px 0 10px;
+}
+
+.edge-types {
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.edge-types legend {
+  font-size: 11px;
+  padding: 0 4px;
+}
+
+#edge-type-boxes {
+  max-height: 160px;
+  overflow-y: auto;
+  font-size: 11px;
+}
+
+#edge-type-boxes label {
+  display: block;
+  margin: 3px 0;
+  cursor: pointer;
+}
+
+.detail {
+  margin-top: 12px;
+  padding: 8px;
+  background: #f9f9fa;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.35;
+  max-height: 220px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  min-width: 0;
+}
+
+#cv {
+  max-width: 100%;
+  max-height: calc(100vh - 48px);
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: crosshair;
+}
+
+.footer {
+  margin: 6px 0 0;
+  font-size: 11px;
+}
+
+code {
+  font-size: 10px;
+  background: #eee;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
