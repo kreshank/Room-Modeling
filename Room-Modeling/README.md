@@ -16,8 +16,11 @@ principle.
 tune/  ─►  summary.json  (optional loss weights, not labels)
 ```
 
-Work from this folder (`Room-Modeling/`). Use `PYTHONPATH=.` so local packages
-resolve (`graph`, `network`, `tune`).
+Work from this folder (`Room-Modeling/`). You normally do not need
+`PYTHONPATH=` — `python -m …` puts the current directory on `sys.path` so
+`graph`, `network`, and `tune` import cleanly. If you ever run from another
+working directory and imports fail, set `PYTHONPATH` to this folder (or use
+an editable install — see each package's `pyproject.toml`).
 
 ## Pipeline CLI
 
@@ -29,7 +32,7 @@ Build `outs/transcripts/summary.json` for `--summary-json` during training.
 Skip if that file already exists.
 
 ```bash
-PYTHONPATH=. python -m tune --in data/cliff_transcripts --out outs/transcripts
+python -m tune --in data/cliff_transcripts --out outs/transcripts
 ```
 
 ### 2. SpatialLM → scene.json
@@ -54,7 +57,7 @@ Builds `outs/graph_cache/<room>/scene_graph.json` from every export under
 `outs/spatial_editor_outputs/`. Skips rooms already up to date.
 
 ```bash
-PYTHONPATH=. python -m graph.sync_cache
+python -m graph.sync_cache
 ```
 
 Defaults: `--scan-root outs/spatial_editor_outputs`, `--cache-dir outs/graph_cache`.
@@ -62,7 +65,7 @@ Defaults: `--scan-root outs/spatial_editor_outputs`, `--cache-dir outs/graph_cac
 Single room instead of the cache:
 
 ```bash
-PYTHONPATH=. python -m graph --scene outs/spatial_editor_outputs/my_room/scene.json
+python -m graph --scene outs/spatial_editor_outputs/my_room/scene.json
 ```
 
 Writes `scene_graph.json` next to `scene.json` unless you pass `--out`.
@@ -70,7 +73,7 @@ Writes `scene_graph.json` next to `scene.json` unless you pass `--out`.
 ### 4. Train
 
 ```bash
-PYTHONPATH=. python -m network.cli train \
+python -m network.cli train \
   --train-glob 'outs/graph_cache/**/scene_graph.json' \
   --val-glob   'outs/graph_cache/**/scene_graph.json' \
   --summary-json outs/transcripts/summary.json
@@ -83,7 +86,7 @@ for uniform per-principle loss weights.
 ### 5. Evaluate
 
 ```bash
-PYTHONPATH=. python -m network.cli eval \
+python -m network.cli eval \
   --checkpoint outs/network_runs/train_<timestamp>/best.pt \
   --glob 'outs/graph_cache/**/scene_graph.json'
 ```
@@ -93,7 +96,7 @@ Defaults: `--device` as above, `--out outs/network_runs/eval_<timestamp>/metrics
 ### 6. Predict one room
 
 ```bash
-PYTHONPATH=. python -m network.cli predict \
+python -m network.cli predict \
   --scene_graph outs/graph_cache/my_room/scene_graph.json \
   --weights     outs/network_runs/train_<timestamp>/best.pt
 ```
@@ -115,12 +118,12 @@ Defaults JSON output under `outs/network_runs/predict_<scene>_<timestamp>.json`.
 outs/spatial_editor_outputs/<room>/   # scene.json, layout.txt, viewer, …
 outs/graph_cache/<room>/              # scene_graph.json, edges.csv
 outs/transcripts/                     # tune: summary.json, *.jsonl
-outs/network_runs/                     # train / eval / predict artifacts
+outs/network_runs/                    # train / eval / predict artifacts
 ```
 
 ## Tests
 
 ```bash
-PYTHONPATH=. python -m pytest graph/tests -q
-PYTHONPATH=. python -m pytest network/tests -q
+python -m pytest graph/tests -q
+python -m pytest network/tests -q
 ```
