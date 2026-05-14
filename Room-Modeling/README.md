@@ -103,6 +103,26 @@ python -m network.cli predict \
 
 Defaults JSON output under `outs/inference/predict_<scene>_<timestamp>.json`.
 
+### 7. Full-pipeline script
+
+Run the full end-to-end workflow from point cloud to prediction with the helper script:
+
+```bash
+python run_full_pipeline.py \
+  --ply path/to/room.ply \
+  --spatiallm-dir path/to/SpatialLM
+```
+
+Optional flags:
+- `--skip-transcripts`
+- `--skip-spatial`
+- `--skip-graph`
+- `--skip-train`
+- `--skip-eval`
+- `--skip-predict`
+
+Use `--out-dir` to change the root output location, and `--checkpoint` to evaluate or predict with an existing model.
+
 ## Modules
 
 | Folder | Role |
