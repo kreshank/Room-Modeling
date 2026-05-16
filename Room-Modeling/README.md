@@ -4,6 +4,8 @@ Point cloud → scene → rule-engine graph → GNN that distills the rules. Opt
 transcript priors weight the training loss by how often people discuss each
 principle.
 
+Here are some of the outputs that we had for our runs: [Google Drive Folder Link](https://drive.google.com/drive/folders/1v9jIzqtvVz70DuJfzxF4G3F5UKAcdDd2?usp=sharing)
+
 ```
 .ply  ─►  spatial/   ─►  scene.json
                       │
