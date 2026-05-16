@@ -215,22 +215,9 @@ Each object becomes an editable entity:
 
 Walls are converted from two endpoints into a top-down rectangle with center, length, thickness, height, and yaw. Doors/windows inherit orientation from their referenced wall when possible.
 
-## 9. Important assumptions
+## 9. Constraints
 
 - The `.ply` file should be a point cloud, not just a mesh-only file.
 - The point cloud should be metric-scale where 1 unit is approximately 1 meter.
 - The point cloud should be z-up and preferably roughly axis-aligned to the room.
 - If your scanner exports a tilted or arbitrary-coordinate point cloud, align/clean it before inference.
-
-## 10. Recommended next integration step
-
-Use the exported `room_scene_confirmed.json` as the input to your room-layout scoring pipeline. For example:
-
-```text
-confirmed JSON
-  -> build occupancy grid
-  -> detect walkable floor area
-  -> compute door visibility / command position
-  -> compute window/light proximity
-  -> produce recommendations + editable layout suggestions
-```
